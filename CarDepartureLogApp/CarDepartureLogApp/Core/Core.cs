@@ -34,6 +34,8 @@ namespace CarDepartureLogApp.Core
                     case ConsoleKey.NumPad1:
                     case ConsoleKey.D1:
                         {
+                            DepartureRecordOperations listOfDepartureOperations = new DepartureRecordOperations();
+
                             bool isMenuRunning = true;
 
                             while (isMenuRunning)
@@ -54,7 +56,8 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad1:
                                     case ConsoleKey.D1:
                                         {
-                                            // Добавление записи о выезде
+                                            listOfDepartureOperations.AddToList(consoleKeyInfo);
+                                            
                                             break;
                                         }
                                     case ConsoleKey.NumPad2:
@@ -110,13 +113,17 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad2:
                                     case ConsoleKey.D2:
                                         {
-                                            carOperations.AddToList(consoleKeyInfo);
+                                            carOperations.RemoveFromList(consoleKeyInfo);
+
                                             break;
                                         }
                                     case ConsoleKey.NumPad3:
                                     case ConsoleKey.D3:
                                         {
-                                            carOperations.AddToList(consoleKeyInfo);
+                                            carOperations.ShowAll(consoleKeyInfo);
+
+                                            carOperations.PressAKey();
+
                                             break;
                                         }
                                     default:
@@ -166,8 +173,10 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad3:
                                     case ConsoleKey.D3:
                                         {
-                                            driverOperations.ShowAllDrivers(consoleKeyInfo);
-                                            
+                                            driverOperations.ShowAll(consoleKeyInfo);
+
+                                            driverOperations.PressAKey();
+
                                             break;
                                         }
                                     default:

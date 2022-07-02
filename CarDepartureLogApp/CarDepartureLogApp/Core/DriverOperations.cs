@@ -18,6 +18,8 @@ namespace CarDepartureLogApp.Core
             new Driver { Id = 3, Name = "Семен", MiddleName = "Яковлевич", SurName = "Зильберман" }
         };
 
+        public List<Driver> Drivers { get => _drivers; set => _drivers = value; }
+
 #endif
 
         internal override void AddToList(ConsoleKeyInfo key)
@@ -99,7 +101,7 @@ namespace CarDepartureLogApp.Core
 
         internal override void Update(ConsoleKeyInfo key) { }
 
-        internal override void ShowAllDrivers(ConsoleKeyInfo key)
+        internal override void ShowAll(ConsoleKeyInfo key)
         {
             ShowOperationInfo($"{key.KeyChar} Список водителей");
 
@@ -115,11 +117,20 @@ namespace CarDepartureLogApp.Core
             Console.WriteLine();
 
 #endif
-            Console.WriteLine("Для продолжения нажмите любую клавишу...");
-
-            Console.ReadKey(true);
+            
         }
 
-
+        protected override string RequestToEnter(string request)
+        {
+            Console.Write($"\n{request} >");
+            Console.CursorVisible = true;
+            string? text = Console.ReadLine();
+            Console.CursorVisible = false;
+            if (text == null)
+            {
+                return "";
+            }
+            return text;
+        }
     }
 }

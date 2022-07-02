@@ -8,14 +8,14 @@ namespace CarDepartureLogApp.Core
 {
     internal abstract class BaseMenuOperations
     {
-        protected void ShowOperationInfo(string text)
+        protected virtual void ShowOperationInfo(string text)
         {
             Console.WriteLine(text);
 
             Console.WriteLine("====================================================");
         }
 
-        protected bool RequestToAdd(params string[] args)
+        protected virtual bool RequestToAdd(params string[] args)
         {
             if (args.Length != 0)
             {
@@ -39,22 +39,43 @@ namespace CarDepartureLogApp.Core
             return false;
         }
 
-        protected string RequestToEnter(string request)
+        protected virtual string RequestToEnter(string request)
         {
-            Console.Write($"\n{request} >");
-            Console.CursorVisible = true;
-            string? text = Console.ReadLine();
-            Console.CursorVisible = false;
-            if (text == null || text == "")
+            string? text;
+
+            while (true)
             {
-                throw new Exception("Вы ничего не ввели");
+                Console.Write($"\n{request} >");
+
+                Console.CursorVisible = true;
+
+                text = Console.ReadLine();
+
+                Console.CursorVisible = false;
+
+                if (text == null || text.Trim() == "")
+                {
+                    Console.WriteLine("Вы ничего не ввели. Повторите ввод");
+
+                    PressAKey();
+
+                    continue;
+                }
+                break;
             }
-            return text;
+                return text;
+        }
+
+        internal virtual void PressAKey()
+        {
+            Console.WriteLine("Для продолжения нажмите любую клавишу...");
+
+            Console.ReadKey(true);
         }
 
         internal abstract void Update(ConsoleKeyInfo key);
         internal abstract void RemoveFromList(ConsoleKeyInfo key);
         internal abstract void AddToList(ConsoleKeyInfo key);
-        internal abstract void ShowAllDrivers(ConsoleKeyInfo key);
+        internal abstract void ShowAll(ConsoleKeyInfo key);
     }
 }

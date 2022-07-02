@@ -16,8 +16,10 @@ namespace CarDepartureLogApp.Core
         {
             new Car { Id = 1, RegistrationNumber = "0001 AB-6", Brand = "VAZ", Model = "21063", Away = false },
             new Car { Id = 2, RegistrationNumber = "0002 MI-7", Brand = "Mazda", Model = "MX7", Away = false },
-            new Car { Id = 3, RegistrationNumber = "0003 OP-6", Brand = "Audi", Model = "Q7", Away = false }
+            new Car { Id = 3, RegistrationNumber = "0003 OP-6", Brand = "Audi", Model = "Q7", Away = true }
         };
+
+        public List<Car> Cars { get => _cars; set => _cars = value; }
 
 #endif
 
@@ -61,8 +63,8 @@ namespace CarDepartureLogApp.Core
 #if DEBUG
 
 
-            foreach (var driver in _cars)
-                Console.WriteLine(driver.ToString());
+            foreach (var item in _cars)
+                Console.WriteLine(item.ToString());
             Console.WriteLine();
 
 #endif
@@ -77,14 +79,14 @@ namespace CarDepartureLogApp.Core
 #if DEBUG
             if (isParse)
             {
-                Car driver = _cars.FirstOrDefault(x => x.Id == number);
+                Car car = _cars.FirstOrDefault(x => x.Id == number);
 
-                if (driver is not null)
+                if (car is not null)
                 {
 
 
 
-                    _cars.Remove(driver);
+                    _cars.Remove(car);
 
 
                     return;
@@ -100,7 +102,7 @@ namespace CarDepartureLogApp.Core
 
         }
 
-        internal override void ShowAllDrivers(ConsoleKeyInfo key)
+        internal override void ShowAll(ConsoleKeyInfo key)
         {
             ShowOperationInfo($"{key.KeyChar} Список автомобилей");
 
@@ -110,15 +112,15 @@ namespace CarDepartureLogApp.Core
 
 #if DEBUG
 
-            foreach (var driver in _cars)
-                Console.WriteLine(driver.ToString());
+            foreach (var item in _cars)
+                Console.WriteLine(item.ToString());
 
             Console.WriteLine();
 
 #endif
-            Console.WriteLine("Для продолжения нажмите любую клавишу...");
-
-            Console.ReadKey(true);
+            
         }
+
+        
     }
 }

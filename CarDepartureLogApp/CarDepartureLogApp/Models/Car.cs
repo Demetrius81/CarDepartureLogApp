@@ -28,7 +28,7 @@ namespace CarDepartureLogApp.Models
 
         public override string ToString()
         {
-            return $"{RegistrationNumber} {Brand} {Model}";
+            return $"{Id}\t {RegistrationNumber} {Brand} {Model}";
         }
 
         public override bool Equals(object? obj)
