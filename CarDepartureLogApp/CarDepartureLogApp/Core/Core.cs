@@ -14,10 +14,10 @@ namespace CarDepartureLogApp.Core
 
             while (execute)
             {
-                MainMenu();
+                Menu.MainMenu();
                 Console.CursorVisible = false;
                 ConsoleKey key = Console.ReadKey(true).Key;
-                
+
                 switch (key)
                 {
                     case ConsoleKey.Escape:
@@ -30,22 +30,103 @@ namespace CarDepartureLogApp.Core
                     case ConsoleKey.NumPad1:
                     case ConsoleKey.D1:
                         {
-                            LogDepartureMenu();
-                            Console.ReadKey(true);
+                            Menu.LogDepartureMenu();
+                            ConsoleKey consoleKey = Console.ReadKey(true).Key;
+
+                            switch (consoleKey)
+                            {
+                                case ConsoleKey.Escape:
+                                    continue;                                                                        
+                                case ConsoleKey.NumPad1:
+                                case ConsoleKey.D1:
+                                    {
+                                        // Добавление записи о выезде
+                                        break;
+                                    }
+                                case ConsoleKey.NumPad2:
+                                case ConsoleKey.D2:
+                                    {
+                                        // Отметка о возвращении
+                                        break;
+                                    }
+                                case ConsoleKey.NumPad3:
+                                case ConsoleKey.D3:
+                                    {
+                                        // Просмотр выездов за сегодня
+                                        break;
+                                    }
+                                default:
+                                    break;
+                            }
+
                             break;
                         }
                     case ConsoleKey.NumPad2:
                     case ConsoleKey.D2:
                         {
-                            CarMenu();
-                            Console.ReadKey(true);
+                            Menu.CarMenu();
+                            ConsoleKey consoleKey = Console.ReadKey(true).Key;
+
+                            switch (consoleKey)
+                            {
+                                case ConsoleKey.Escape:
+                                    continue;
+                                case ConsoleKey.NumPad1:
+                                case ConsoleKey.D1:
+                                    {
+                                        // Добавление автомобиля в список
+                                        break;
+                                    }
+                                case ConsoleKey.NumPad2:
+                                case ConsoleKey.D2:
+                                    {
+                                        // Удаление автомобиля из списка
+                                        break;
+                                    }
+                                case ConsoleKey.NumPad3:
+                                case ConsoleKey.D3:
+                                    {
+                                        // Просмотр списка автомобилей
+                                        break;
+                                    }
+                                default:
+                                    break;
+                            }
+
                             break;
                         }
                     case ConsoleKey.NumPad3:
                     case ConsoleKey.D3:
                         {
-                            DriverMenu();
-                            Console.ReadKey(true);
+                            Menu.DriverMenu();
+                            ConsoleKey consoleKey = Console.ReadKey(true).Key;
+
+                            switch (consoleKey)
+                            {
+                                case ConsoleKey.Escape:
+                                    continue;
+                                case ConsoleKey.NumPad1:
+                                case ConsoleKey.D1:
+                                    {
+                                        // Добавление водителя в список
+                                        break;
+                                    }
+                                case ConsoleKey.NumPad2:
+                                case ConsoleKey.D2:
+                                    {
+                                        // Удаление водителя из списка
+                                        break;
+                                    }
+                                case ConsoleKey.NumPad3:
+                                case ConsoleKey.D3:
+                                    {
+                                        // Просмотр списка водителей
+                                        break;
+                                    }
+                                default:
+                                    break;
+                            }
+
                             break;
                         }
                     default:
@@ -57,57 +138,6 @@ namespace CarDepartureLogApp.Core
             Console.ReadKey(true);
         }
 
-        private void MainMenu()
-        {
-            Console.Clear();
-            Console.WriteLine("Главное меню");
-            Console.WriteLine("====================================================");
-
-            Console.WriteLine("Для работы с журналом выезда автомашин\tнажмите 1");
-            Console.WriteLine("Для работы со списком автомобилей\tнажмите 2");
-            Console.WriteLine("Для работы со списком водителей\t\tнажмите 3");
-            Console.WriteLine("Для выхода из программы\t\t\tнажмите ESC");
-
-            Console.WriteLine("====================================================");
-        }
-        private void LogDepartureMenu()
-        {
-            Console.Clear();
-            Console.WriteLine("Меню работы с журналом выезда автомашин");
-            Console.WriteLine("====================================================");
-
-            Console.WriteLine("Для работы с журналом выезда автомашин\tнажмите 1");
-            Console.WriteLine("Для работы со списком автомобилей\tнажмите 2");
-            Console.WriteLine("Для работы со списком водителей\t\tнажмите 3");
-            Console.WriteLine("Для выхода из программы\t\t\tнажмите ESC");
-
-            Console.WriteLine("====================================================");
-        }
-        private void CarMenu()
-        {
-            Console.Clear();
-            Console.WriteLine("Меню работы со списком автомобилей");
-            Console.WriteLine("====================================================");
-
-            Console.WriteLine("Для работы с журналом выезда автомашин\tнажмите 1");
-            Console.WriteLine("Для работы со списком автомобилей\tнажмите 2");
-            Console.WriteLine("Для работы со списком водителей\t\tнажмите 3");
-            Console.WriteLine("Для выхода из программы\t\t\tнажмите ESC");
-
-            Console.WriteLine("====================================================");
-        }
-        private void DriverMenu()
-        {
-            Console.Clear();
-            Console.WriteLine("Меню работы со списком водителей");
-            Console.WriteLine("====================================================");
-
-            Console.WriteLine("Для работы с журналом выезда автомашин\tнажмите 1");
-            Console.WriteLine("Для работы со списком автомобилей\tнажмите 2");
-            Console.WriteLine("Для работы со списком водителей\t\tнажмите 3");
-            Console.WriteLine("Для выхода из программы\t\t\tнажмите ESC");
-
-            Console.WriteLine("====================================================");
-        }
+       
     }
 }
