@@ -15,8 +15,12 @@ namespace CarDepartureLogApp.Core
             while (execute)
             {
                 Menu.MainMenu();
+
                 Console.CursorVisible = false;
-                ConsoleKey key = Console.ReadKey(true).Key;
+
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+                ConsoleKey key = keyInfo.Key;
 
                 switch (key)
                 {
@@ -30,67 +34,92 @@ namespace CarDepartureLogApp.Core
                     case ConsoleKey.NumPad1:
                     case ConsoleKey.D1:
                         {
-                            Menu.LogDepartureMenu();
-                            ConsoleKey consoleKey = Console.ReadKey(true).Key;
+                            bool isMenuRunning = true;
 
-                            switch (consoleKey)
+                            while (isMenuRunning)
                             {
-                                case ConsoleKey.Escape:
-                                    continue;                                                                        
-                                case ConsoleKey.NumPad1:
-                                case ConsoleKey.D1:
-                                    {
-                                        // Добавление записи о выезде
+                                Menu.LogDepartureMenu(keyInfo);
+
+                                ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(true);
+
+                                ConsoleKey consoleKey = consoleKeyInfo.Key;
+
+                                switch (consoleKey)
+                                {
+                                    case ConsoleKey.Escape:
+                                        {
+                                            isMenuRunning = false;
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad1:
+                                    case ConsoleKey.D1:
+                                        {
+                                            // Добавление записи о выезде
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad2:
+                                    case ConsoleKey.D2:
+                                        {
+                                            // Отметка о возвращении
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad3:
+                                    case ConsoleKey.D3:
+                                        {
+                                            // Просмотр выездов за сегодня
+                                            break;
+                                        }
+                                    default:
                                         break;
-                                    }
-                                case ConsoleKey.NumPad2:
-                                case ConsoleKey.D2:
-                                    {
-                                        // Отметка о возвращении
-                                        break;
-                                    }
-                                case ConsoleKey.NumPad3:
-                                case ConsoleKey.D3:
-                                    {
-                                        // Просмотр выездов за сегодня
-                                        break;
-                                    }
-                                default:
-                                    break;
+                                }
+
                             }
+
 
                             break;
                         }
                     case ConsoleKey.NumPad2:
                     case ConsoleKey.D2:
                         {
-                            Menu.CarMenu();
-                            ConsoleKey consoleKey = Console.ReadKey(true).Key;
+                            bool isMenuRunning = true;
 
-                            switch (consoleKey)
+                            while (isMenuRunning)
                             {
-                                case ConsoleKey.Escape:
-                                    continue;
-                                case ConsoleKey.NumPad1:
-                                case ConsoleKey.D1:
-                                    {
-                                        // Добавление автомобиля в список
+                                Menu.CarMenu(keyInfo);
+
+                                ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(true);
+
+                                ConsoleKey consoleKey = consoleKeyInfo.Key;
+
+                                switch (consoleKey)
+                                {
+                                    case ConsoleKey.Escape:
+                                        {
+                                            isMenuRunning = false;
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad1:
+                                    case ConsoleKey.D1:
+                                        {
+                                            // Добавление автомобиля в список
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad2:
+                                    case ConsoleKey.D2:
+                                        {
+                                            // Удаление автомобиля из списка
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad3:
+                                    case ConsoleKey.D3:
+                                        {
+                                            // Просмотр списка автомобилей
+                                            break;
+                                        }
+                                    default:
                                         break;
-                                    }
-                                case ConsoleKey.NumPad2:
-                                case ConsoleKey.D2:
-                                    {
-                                        // Удаление автомобиля из списка
-                                        break;
-                                    }
-                                case ConsoleKey.NumPad3:
-                                case ConsoleKey.D3:
-                                    {
-                                        // Просмотр списка автомобилей
-                                        break;
-                                    }
-                                default:
-                                    break;
+                                }
+
                             }
 
                             break;
@@ -98,34 +127,50 @@ namespace CarDepartureLogApp.Core
                     case ConsoleKey.NumPad3:
                     case ConsoleKey.D3:
                         {
-                            Menu.DriverMenu();
-                            ConsoleKey consoleKey = Console.ReadKey(true).Key;
+                            bool isMenuRunning = true;
 
-                            switch (consoleKey)
+                            while (isMenuRunning)
                             {
-                                case ConsoleKey.Escape:
-                                    continue;
-                                case ConsoleKey.NumPad1:
-                                case ConsoleKey.D1:
-                                    {
-                                        // Добавление водителя в список
+                                Menu.DriverMenu(keyInfo);
+
+                                ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(true);
+
+                                ConsoleKey consoleKey = consoleKeyInfo.Key;
+
+                                switch (consoleKey)
+                                {
+                                    case ConsoleKey.Escape:
+                                        {
+                                            isMenuRunning = false;
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad1:
+                                    case ConsoleKey.D1:
+                                        {
+                                            DriverOperations.AddToList(consoleKeyInfo);
+                                            
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad2:
+                                    case ConsoleKey.D2:
+                                        {
+                                            DriverOperations.RemoveFromList(consoleKeyInfo);
+                                            
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad3:
+                                    case ConsoleKey.D3:
+                                        {
+                                            DriverOperations.ShowAllDrivers(consoleKeyInfo);
+                                            // Просмотр списка водителей
+                                            break;
+                                        }
+                                    default:
                                         break;
-                                    }
-                                case ConsoleKey.NumPad2:
-                                case ConsoleKey.D2:
-                                    {
-                                        // Удаление водителя из списка
-                                        break;
-                                    }
-                                case ConsoleKey.NumPad3:
-                                case ConsoleKey.D3:
-                                    {
-                                        // Просмотр списка водителей
-                                        break;
-                                    }
-                                default:
-                                    break;
+                                }
+
                             }
+
 
                             break;
                         }
@@ -138,6 +183,6 @@ namespace CarDepartureLogApp.Core
             Console.ReadKey(true);
         }
 
-       
+
     }
 }

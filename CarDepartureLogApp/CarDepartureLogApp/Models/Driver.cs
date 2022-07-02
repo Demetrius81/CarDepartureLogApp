@@ -23,7 +23,7 @@ namespace CarDepartureLogApp.Models
 
         public override string ToString()
         {
-            return $"{SurName} {Name.FirstOrDefault()} {MiddleName.FirstOrDefault()}";
+            return $"{Id}\t {SurName} {Name.FirstOrDefault()}.{MiddleName.FirstOrDefault()}.";
         }
         public override bool Equals(object? obj)
         {

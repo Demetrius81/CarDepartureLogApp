@@ -21,10 +21,10 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine("====================================================");
         }
-        internal static void LogDepartureMenu()
+        internal static void LogDepartureMenu(ConsoleKeyInfo keyInfo)
         {
             Console.Clear();
-            Console.WriteLine("1-Меню работы с журналом выезда автомашин");
+            Console.WriteLine($"{keyInfo.KeyChar} Меню работы с журналом выезда автомашин");
             Console.WriteLine("====================================================");
 
             Console.WriteLine("Для добавления записи о выезде\t\tнажмите 1");
@@ -34,10 +34,10 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine("====================================================");
         }
-        internal static void CarMenu()
+        internal static void CarMenu(ConsoleKeyInfo keyInfo)
         {
             Console.Clear();
-            Console.WriteLine("2-Меню работы со списком автомобилей");
+            Console.WriteLine($"{keyInfo.KeyChar} Меню работы со списком автомобилей");
             Console.WriteLine("====================================================");
 
             Console.WriteLine("Для добавления автомобиля в список\tнажмите 1");
@@ -47,10 +47,10 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine("====================================================");
         }
-        internal static void DriverMenu()
+        internal static void DriverMenu(ConsoleKeyInfo keyInfo)
         {
             Console.Clear();
-            Console.WriteLine("3-Меню работы со списком водителей");
+            Console.WriteLine($"{keyInfo.KeyChar} Меню работы со списком водителей");
             Console.WriteLine("====================================================");
 
             Console.WriteLine("Для добавления водителя в список\tнажмите 1");
