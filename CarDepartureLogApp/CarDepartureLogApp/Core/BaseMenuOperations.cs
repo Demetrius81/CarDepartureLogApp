@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace CarDepartureLogApp.Core
 {
-    internal abstract class BaseMenuRequests
+    internal abstract class BaseMenuOperations
     {
-        protected static void ShowOperationInfo(string text)
+        protected void ShowOperationInfo(string text)
         {
             Console.WriteLine(text);
 
             Console.WriteLine("====================================================");
         }
 
-        protected static bool RequestToAdd(params string[] args)
+        protected bool RequestToAdd(params string[] args)
         {
             if (args.Length != 0)
             {
@@ -39,7 +39,7 @@ namespace CarDepartureLogApp.Core
             return false;
         }
 
-        protected static string RequestToEnter(string request)
+        protected string RequestToEnter(string request)
         {
             Console.Write($"\n{request} >");
             Console.CursorVisible = true;
@@ -51,5 +51,10 @@ namespace CarDepartureLogApp.Core
             }
             return text;
         }
+
+        internal abstract void Update(ConsoleKeyInfo key);
+        internal abstract void RemoveFromList(ConsoleKeyInfo key);
+        internal abstract void AddToList(ConsoleKeyInfo key);
+        internal abstract void ShowAllDrivers(ConsoleKeyInfo key);
     }
 }

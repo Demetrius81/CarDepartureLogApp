@@ -81,6 +81,8 @@ namespace CarDepartureLogApp.Core
                     case ConsoleKey.NumPad2:
                     case ConsoleKey.D2:
                         {
+                            CarOperations carOperations = new CarOperations();
+
                             bool isMenuRunning = true;
 
                             while (isMenuRunning)
@@ -101,19 +103,20 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad1:
                                     case ConsoleKey.D1:
                                         {
-                                            // Добавление автомобиля в список
+                                            carOperations.AddToList(consoleKeyInfo);
+                                            
                                             break;
                                         }
                                     case ConsoleKey.NumPad2:
                                     case ConsoleKey.D2:
                                         {
-                                            // Удаление автомобиля из списка
+                                            carOperations.AddToList(consoleKeyInfo);
                                             break;
                                         }
                                     case ConsoleKey.NumPad3:
                                     case ConsoleKey.D3:
                                         {
-                                            // Просмотр списка автомобилей
+                                            carOperations.AddToList(consoleKeyInfo);
                                             break;
                                         }
                                     default:
@@ -127,6 +130,8 @@ namespace CarDepartureLogApp.Core
                     case ConsoleKey.NumPad3:
                     case ConsoleKey.D3:
                         {
+                            DriverOperations driverOperations = new DriverOperations();
+
                             bool isMenuRunning = true;
 
                             while (isMenuRunning)
@@ -147,22 +152,22 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad1:
                                     case ConsoleKey.D1:
                                         {
-                                            DriverOperations.AddToList(consoleKeyInfo);
+                                            driverOperations.AddToList(consoleKeyInfo);
                                             
                                             break;
                                         }
                                     case ConsoleKey.NumPad2:
                                     case ConsoleKey.D2:
                                         {
-                                            DriverOperations.RemoveFromList(consoleKeyInfo);
+                                            driverOperations.RemoveFromList(consoleKeyInfo);
                                             
                                             break;
                                         }
                                     case ConsoleKey.NumPad3:
                                     case ConsoleKey.D3:
                                         {
-                                            DriverOperations.ShowAllDrivers(consoleKeyInfo);
-                                            // Просмотр списка водителей
+                                            driverOperations.ShowAllDrivers(consoleKeyInfo);
+                                            
                                             break;
                                         }
                                     default:

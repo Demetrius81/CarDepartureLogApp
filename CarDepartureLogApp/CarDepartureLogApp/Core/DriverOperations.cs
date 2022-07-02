@@ -7,9 +7,20 @@ using System.Threading.Tasks;
 
 namespace CarDepartureLogApp.Core
 {
-    internal class DriverOperations : BaseMenuRequests
+    internal class DriverOperations : BaseMenuOperations
     {
-        internal static void AddToList(ConsoleKeyInfo key)
+#if DEBUG
+
+        private List<Driver> _drivers = new List<Driver>()
+        {
+            new Driver { Id = 1, Name = "Василий", MiddleName = "Иванович", SurName = "Пупкин" },
+            new Driver { Id = 2, Name = "Аркадий", MiddleName = "Петрович", SurName = "Пароходов" },
+            new Driver { Id = 3, Name = "Семен", MiddleName = "Яковлевич", SurName = "Зильберман" }
+        };
+
+#endif
+
+        internal override void AddToList(ConsoleKeyInfo key)
         {
             ShowOperationInfo($"{key.KeyChar} Добавление водителя в список");
 
@@ -21,56 +32,57 @@ namespace CarDepartureLogApp.Core
 
             if (isIt)
             {
-                // Вызов метода добавления в БД
+#if DEBUG
+
+                int i = _drivers.LastOrDefault().Id + 1;
+
+                _drivers.Add(new Driver { Id = i, Name = firstName, MiddleName = middleName, SurName = surName });
+
+#endif
+
+                // TODO: Добавление водителя в БД
+
                 Console.WriteLine("\nAdd to DataBase");
                 Console.ReadKey();
             }
         }
 
-        internal static void RemoveFromList(ConsoleKeyInfo key)
+        internal override void RemoveFromList(ConsoleKeyInfo key)
         {
             ShowOperationInfo($"{key.KeyChar} Добавление водителя в список");
 
-
-
-
-#if DEBUG
-            List<Driver> drivers = new List<Driver>();
-
-            Driver driver1 = new Driver { Id = 1, Name = "Василий", MiddleName = "Иванович", SurName = "Пупкин" };
-            Driver driver2 = new Driver { Id = 2, Name = "Аркадий", MiddleName = "Петрович", SurName = "Пароходов" };
-            Driver driver3 = new Driver { Id = 3, Name = "Семен", MiddleName = "Яковлевич", SurName = "Зильберман" };
-
-            drivers.Add(driver1);
-            drivers.Add(driver2);
-            drivers.Add(driver3);
-
             Console.WriteLine();
 
-            foreach (Driver driver in drivers)
+            // TODO: вывод списка водителей
+
+#if DEBUG
+
+
+            foreach (var driver in _drivers)
                 Console.WriteLine(driver.ToString());
             Console.WriteLine();
 
 #endif
 
 
-
-
-            // Вывод списка водителей из БД
-
             string numberString = RequestToEnter("Введите Номер водителя из списка");
 
             bool isParse = int.TryParse(numberString, out int number);
 
+            // TODO: Удаление водителя из БД
+
+#if DEBUG
             if (isParse)
             {
-                Driver driver = drivers.FirstOrDefault(x => x.Id == number);
+                Driver driver = _drivers.FirstOrDefault(x => x.Id == number);
 
                 if (driver is not null)
                 {
-                    // Удаляем водителя из БД
 
-                    drivers.Remove(driver);
+
+
+                    _drivers.Remove(driver);
+
 
                     return;
                 }
@@ -80,31 +92,26 @@ namespace CarDepartureLogApp.Core
             }
 
             throw new ArgumentException($"\"{numberString}\" is not a number!");
-            
+#endif
+
 
         }
 
-        internal static void ShowAllDrivers(ConsoleKeyInfo key)
+        internal override void Update(ConsoleKeyInfo key) { }
+
+        internal override void ShowAllDrivers(ConsoleKeyInfo key)
         {
             ShowOperationInfo($"{key.KeyChar} Список водителей");
 
-
-
-#if DEBUG
-            List<Driver> drivers = new List<Driver>();
-
-            Driver driver1 = new Driver { Id = 1, Name = "Василий", MiddleName = "Иванович", SurName = "Пупкин" };
-            Driver driver2 = new Driver { Id = 2, Name = "Аркадий", MiddleName = "Петрович", SurName = "Пароходов" };
-            Driver driver3 = new Driver { Id = 3, Name = "Семен", MiddleName = "Яковлевич", SurName = "Зильберман" };
-
-            drivers.Add(driver1);
-            drivers.Add(driver2);
-            drivers.Add(driver3);
-
             Console.WriteLine();
 
-            foreach (Driver driver in drivers)
+            // TODO: вывод списка водителей
+
+#if DEBUG
+
+            foreach (var driver in _drivers)
                 Console.WriteLine(driver.ToString());
+
             Console.WriteLine();
 
 #endif
