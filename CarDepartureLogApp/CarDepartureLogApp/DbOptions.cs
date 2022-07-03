@@ -8,6 +8,6 @@ namespace CarDepartureLogApp
 {
     internal class DbOptions
     {
-        public static string ConnectionString { get => @"server=127.0.0.1;port=3306;user=root;password=Pegasus2;database=TestDb;"; }
+        public static string ConnectionString { get => @"server=127.0.0.1;port=3306;user=root;password=Pegasus2;database=TestDepartureLog;"; }
     }
 }

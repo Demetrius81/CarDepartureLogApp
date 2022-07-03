@@ -39,6 +39,46 @@ namespace CarDepartureLogApp.Core
             return false;
         }
 
+        protected virtual void RequestToEnter(string request, out int number)
+        {
+            number = 0;
+
+            string? text;            
+
+            while (true)
+            {
+                Console.Write($"\n{request} >");
+
+                Console.CursorVisible = true;
+
+                text = Console.ReadLine();
+
+                Console.CursorVisible = false;
+
+                if (text == null || text.Trim() == "")
+                {
+                    Console.WriteLine("Вы ничего не ввели. Повторите ввод");
+
+                    PressAKey();
+
+                    continue;
+                }
+
+                bool isParse = int.TryParse(text, out number);
+
+                if (!isParse)
+                {
+                    Console.WriteLine("Вы ввели не число. Повторите ввод");
+
+                    PressAKey();
+
+                    continue;
+                }
+
+                break;
+            }            
+        }
+
         protected virtual string RequestToEnter(string request)
         {
             string? text;

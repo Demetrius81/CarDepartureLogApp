@@ -1,4 +1,5 @@
-﻿using CarDepartureLogApp.Models;
+﻿using CarDepartureLogApp.Context;
+using CarDepartureLogApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +10,12 @@ namespace CarDepartureLogApp.Core
 {
     internal class DriverOperations : BaseMenuOperations
     {
-#if DEBUG
+        private readonly AppMySqlContext _context;
 
-        private List<Driver> _drivers = new List<Driver>()
+        public DriverOperations(AppMySqlContext context = null)
         {
-            new Driver { Id = 1, Name = "Василий", MiddleName = "Иванович", SurName = "Пупкин" },
-            new Driver { Id = 2, Name = "Аркадий", MiddleName = "Петрович", SurName = "Пароходов" },
-            new Driver { Id = 3, Name = "Семен", MiddleName = "Яковлевич", SurName = "Зильберман" }
-        };
-
-        public List<Driver> Drivers { get => _drivers; set => _drivers = value; }
-
-#endif
+            _context = context == null ? AppMySqlContext.GetAppContext() : context;
+        }
 
         internal override void AddToList(ConsoleKeyInfo key)
         {
@@ -34,18 +29,11 @@ namespace CarDepartureLogApp.Core
 
             if (isIt)
             {
-#if DEBUG
-
-                int i = _drivers.LastOrDefault().Id + 1;
-
-                _drivers.Add(new Driver { Id = i, Name = firstName, MiddleName = middleName, SurName = surName });
-
-#endif
-
-                // TODO: Добавление водителя в БД
-
-                Console.WriteLine("\nAdd to DataBase");
-                Console.ReadKey();
+                using (_context)
+                {
+                    _context.Drivers.Add(new Driver(firstName, middleName, surName));
+                    _context.SaveChanges();
+                }
             }
         }
 
@@ -55,51 +43,31 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            // TODO: вывод списка водителей
-
-#if DEBUG
-
-
-            foreach (var driver in _drivers)
-                Console.WriteLine(driver.ToString());
-            Console.WriteLine();
-
-#endif
-
-
-            string numberString = RequestToEnter("Введите Номер водителя из списка");
-
-            bool isParse = int.TryParse(numberString, out int number);
-
-            // TODO: Удаление водителя из БД
-
-#if DEBUG
-            if (isParse)
+            using (_context)
             {
-                Driver driver = _drivers.FirstOrDefault(x => x.Id == number);
+                foreach (Driver item in _context.Drivers)
+                {
+                    Console.WriteLine(item.ToString());
+                }
+
+                RequestToEnter("Введите номер водителя из списка", out int number);
+
+                Driver driver = _context.Drivers.FirstOrDefault(x => x.Id == number) as Driver;
 
                 if (driver is not null)
                 {
-
-
-
-                    _drivers.Remove(driver);
-
-
+                    _context.Drivers.Remove(driver);
+                    _context.SaveChanges();
                     return;
                 }
-
-                throw new Exception($"Driver with ID {number} do not exist in the list!");
-
+                Console.WriteLine("Такого водителя в списке нет.");
             }
-
-            throw new ArgumentException($"\"{numberString}\" is not a number!");
-#endif
-
-
         }
 
-        internal override void Update(ConsoleKeyInfo key) { }
+        internal override void Update(ConsoleKeyInfo key)
+        {
+
+        }
 
         internal override void ShowAll(ConsoleKeyInfo key)
         {
@@ -107,30 +75,13 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            // TODO: вывод списка водителей
-
-#if DEBUG
-
-            foreach (var driver in _drivers)
-                Console.WriteLine(driver.ToString());
-
-            Console.WriteLine();
-
-#endif
-            
-        }
-
-        protected override string RequestToEnter(string request)
-        {
-            Console.Write($"\n{request} >");
-            Console.CursorVisible = true;
-            string? text = Console.ReadLine();
-            Console.CursorVisible = false;
-            if (text == null)
+            using (_context)
             {
-                return "";
+                foreach (var driver in _context.Drivers)
+                {
+                    Console.WriteLine(driver.ToString());
+                }
             }
-            return text;
-        }
+        }        
     }
 }

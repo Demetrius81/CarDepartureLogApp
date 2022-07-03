@@ -1,4 +1,5 @@
-﻿using CarDepartureLogApp.Models;
+﻿using CarDepartureLogApp.Context;
+using CarDepartureLogApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,83 +10,39 @@ namespace CarDepartureLogApp.Core
 {
     internal class DepartureRecordOperations : BaseMenuOperations
     {
+        private readonly AppMySqlContext _context;
 
-#if DEBUG
-
-        private List<DepartureRecord> _departures = new List<DepartureRecord>()
+        public DepartureRecordOperations()
         {
-            new DepartureRecord
-            {
-                Id = 1,
-                DepartureTime = DateTime.Now,
-                ReturnTime =DateTime.Now,
-                OdometerBeforeLeaving =1,
-                OdometerAfterLeaving = default,
-                PurposeOfDeparture = "За апельсинами",
-                Description = "На последних парах",
-                Car = new Car{Id = 3, RegistrationNumber = "0003 OP-6", Brand = "Audi", Model = "Q7", Away = true },
-                Driver = new Driver { Id = 1, Name = "Василий", MiddleName = "Иванович", SurName = "Пупкин" }
-            },
-            new DepartureRecord
-            {
-                Id = 2,
-                DepartureTime = DateTime.Now,
-                ReturnTime =DateTime.Now,
-                OdometerBeforeLeaving =12345,
-                OdometerAfterLeaving = 12456,
-                PurposeOfDeparture = "За ананасами",
-                Description = "Без лобового стекла",
-                Car = new Car { Id = 1, RegistrationNumber = "0001 AB-6", Brand = "VAZ", Model = "21063", Away = false },
-                Driver = new Driver { Id = 2, Name = "Аркадий", MiddleName = "Петрович", SurName = "Пароходов" }
-            },
-            new DepartureRecord
-            {
-                Id = 3,
-                DepartureTime = DateTime.Now,
-                ReturnTime =DateTime.Now,
-                OdometerBeforeLeaving =2234,
-                OdometerAfterLeaving = 2356,
-                PurposeOfDeparture = "На ТО",
-                Description = "На последних парах",
-                Car = new Car { Id = 2, RegistrationNumber = "0002 MI-7", Brand = "Mazda", Model = "MX7", Away = false },
-                Driver = new Driver { Id = 3, Name = "Семен", MiddleName = "Яковлевич", SurName = "Зильберман" }
-            }
-        };
-
-#endif
+            _context = AppMySqlContext.GetAppContext();
+        }
 
         internal override void AddToList(ConsoleKeyInfo key)
         {
-            CarOperations carOperations = new CarOperations();
+
 
             Car car = new Car();
 
+            Driver driver = new Driver();
+
+            DepartureRecord lastRecordSelectedCar = null;
+
             ShowOperationInfo($"{key.KeyChar} Новая запись о выезде");
+
+            CarOperations carOperations = new CarOperations(_context);
 
             carOperations.ShowAll(key);
 
-            DateTime departureTime = DateTime.Now;
-
-            int odometerBeforeLeaving;
+            int odometerBeforeLeaving = default;
 
             while (true)
             {
-                Console.CursorVisible = true;
+                RequestToEnter("Введите ID автомобиля", out int carId);
 
-                bool isParse = int.TryParse(RequestToEnter("Введите ID автомобиля"), out int id);
-
-                Console.CursorVisible = false;
-
-                if (!isParse)
+                using (_context)
                 {
-                    Console.WriteLine("Вы ввели не цифру. Нажмите любую клавишу чтобы продолжить...");
-
-                    Console.ReadKey(true);
-
-                    continue;
+                    car = _context.Cars.Where(x => x.Id == carId).FirstOrDefault() as Car;
                 }
-
-                car = carOperations.Cars.Where(x => x.Id == id).FirstOrDefault();
 
                 if (car.Away)
                 {
@@ -107,11 +64,35 @@ namespace CarDepartureLogApp.Core
                 break;
             }
 
-            DepartureRecord lastRecordSelectedCar = _departures.Where(x => x.Equals(car)).LastOrDefault();
+            DriverOperations driverOperations = new DriverOperations();
+
+            while (true)
+            {
+                RequestToEnter("Введите ID водителя", out int driverId);
+                using (_context)
+                {
+                    driver = _context.Drivers.Where(x => x.Id == driverId).FirstOrDefault() as Driver;
+                }
+
+                if (driver == null)
+                {
+                    Console.WriteLine("Водителя с введенным ID нет в списке. Нажмите любую клавишу чтобы продолжить...");
+
+                    Console.ReadKey(true);
+
+                    continue;
+                }
+                break;
+            }
+
+            using (_context)
+            {
+                lastRecordSelectedCar = _context.DepartureRecords.Where(x => x.Equals(car)).LastOrDefault() as DepartureRecord;
+            }
 
             if (lastRecordSelectedCar == null)
             {
-                odometerBeforeLeaving = 0;
+                // TODO: здесь вызываем метод создания новой записи с новым автомобилем
             }
             else
             {
@@ -121,33 +102,27 @@ namespace CarDepartureLogApp.Core
             string purposeOfDeparture = RequestToEnter("Введите цель поездки");
             string description = RequestToEnter("Введите примечания");
 
-            bool isIt = RequestToAdd(departureTime.ToShortTimeString(), car.ToString(), $"Показания одометра: {odometerBeforeLeaving}");
+            bool isIt = RequestToAdd(car.ToString(), $"Показания одометра: {odometerBeforeLeaving}");
 
             if (isIt)
             {
-#if DEBUG
-
-                int i = _departures.LastOrDefault().Id + 1;
-
-                _departures.Add(new DepartureRecord
+                using (_context)
                 {
-                    Id = 3,
-                    DepartureTime = DateTime.Now,
-                    ReturnTime = DateTime.Now,
-                    OdometerBeforeLeaving = 125367,
-                    OdometerAfterLeaving = 184257,
-                    PurposeOfDeparture = "На ТО",
-                    Description = "На последних парах",
-                    Car = new Car { Id = 3, RegistrationNumber = "0003 OP-6", Brand = "Audi", Model = "Q7", Away = false },
-                    Driver = new Driver { Id = 1, Name = "Василий", MiddleName = "Иванович", SurName = "Пупкин" }
-                });
+                    _context.DepartureRecords.Add(new DepartureRecord
+                    {
+                        DepartureTime = DateTime.Now,
+                        OdometerBeforeLeaving = odometerBeforeLeaving,
+                        PurposeOfDeparture = purposeOfDeparture,
+                        Description = description,
+                        CarId = car.Id,
+                        DriverId = driver.Id
+                    });
 
-#endif
+                    _context.Cars.Where(x => x.Equals(car)).FirstOrDefault().Away = true;
 
-                // TODO: Добавление водителя в БД
+                    _context.SaveChanges();
 
-                Console.WriteLine("\nAdd to DataBase");
-                Console.ReadKey();
+                }
             }
         }
 
@@ -155,52 +130,29 @@ namespace CarDepartureLogApp.Core
 
         internal override void RemoveFromList(ConsoleKeyInfo key)
         {
-            ShowOperationInfo($"{key.KeyChar} Добавление автомобиля в список");
+            ShowOperationInfo($"{key.KeyChar} Удаление записи о выезде");
 
             Console.WriteLine();
 
-            // TODO: вывод списка водителей
-
-#if DEBUG
-
-
-            foreach (var item in _departures)
-                Console.WriteLine(item.ToString());
-            Console.WriteLine();
-
-#endif
-
-
-            string numberString = RequestToEnter("Введите Номер автомобиля из списка");
-
-            bool isParse = int.TryParse(numberString, out int number);
-
-            // TODO: Удаление водителя из БД
-
-#if DEBUG
-            if (isParse)
+            using (_context)
             {
-                DepartureRecord departureRecord = _departures.FirstOrDefault(x => x.Id == number);
-
-                if (departureRecord is not null)
+                foreach (var item in _context.DepartureRecords)
                 {
-
-
-
-                    _departures.Remove(departureRecord);
-
-
-                    return;
+                    Console.WriteLine(item.ToString());
                 }
 
-                throw new Exception($"A Departure Record with ID {number} do not exist in the list!");
+                RequestToEnter("Введите ID записи для удаления.", out int id);
 
+                DepartureRecord record = _context.DepartureRecords.FirstOrDefault(x => x.Id == id) as DepartureRecord;
+
+                if (record is not null)
+                {
+                    _context.DepartureRecords.Remove(record);
+                    _context.SaveChanges();
+                    return;
+                }
+                Console.WriteLine("Такой записи нет нет.");
             }
-
-            throw new ArgumentException($"\"{numberString}\" is not a number!");
-#endif
-
-
         }
 
         internal override void ShowAll(ConsoleKeyInfo key)
@@ -209,19 +161,31 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            // TODO: вывод списка водителей
+            using (_context)
+            { 
+                var records = _context.DepartureRecords
+                    .Where(x => x.DepartureTime > DateTime.Now.AddHours(-24) 
+                             && x.DepartureTime <= DateTime.Now)
+                    .ToList();
 
-#if DEBUG
+                foreach (DepartureRecord record in records)
+                {
+                    Console.WriteLine(record.ToString());
+                }
+            }
+        }
 
-            foreach (var item in _departures)
-                Console.WriteLine(item.ToString());
-
-            Console.WriteLine();
-
-#endif
-            Console.WriteLine("Для продолжения нажмите любую клавишу...");
-
-            Console.ReadKey(true);
+        protected override string RequestToEnter(string request)
+        {
+            Console.Write($"\n{request} >");
+            Console.CursorVisible = true;
+            string? text = Console.ReadLine();
+            Console.CursorVisible = false;
+            if (text == null)
+            {
+                return "";
+            }
+            return text;
         }
     }
 }

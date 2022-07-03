@@ -1,4 +1,6 @@
-﻿using CarDepartureLogApp.Models;
+﻿using CarDepartureLogApp.Context;
+using CarDepartureLogApp.Models;
+using CarDepartureLogApp.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +11,12 @@ namespace CarDepartureLogApp.Core
 {
     internal class CarOperations : BaseMenuOperations
     {
-
-#if DEBUG
-
-        private List<Car> _cars = new List<Car>()
+        private readonly AppMySqlContext _context;
+        
+        public CarOperations(AppMySqlContext context = null)
         {
-            new Car { Id = 1, RegistrationNumber = "0001 AB-6", Brand = "VAZ", Model = "21063", Away = false },
-            new Car { Id = 2, RegistrationNumber = "0002 MI-7", Brand = "Mazda", Model = "MX7", Away = false },
-            new Car { Id = 3, RegistrationNumber = "0003 OP-6", Brand = "Audi", Model = "Q7", Away = true }
-        };
-
-        public List<Car> Cars { get => _cars; set => _cars = value; }
-
-#endif
+            _context = context == null ? AppMySqlContext.GetAppContext() : context;
+        }
 
         internal override void AddToList(ConsoleKeyInfo key)
         {
@@ -35,70 +30,44 @@ namespace CarDepartureLogApp.Core
 
             if (isIt)
             {
-#if DEBUG
-
-                int i = _cars.LastOrDefault().Id + 1;
-
-                _cars.Add(new Car { Id = i, RegistrationNumber = registrationNumber, Brand = brand, Model = model, Away = false });
-
-#endif
-
-                // TODO: Добавление водителя в БД
-
-                Console.WriteLine("\nAdd to DataBase");
-                Console.ReadKey();
+                using (_context)
+                {
+                    _context.Cars.Add(new Car(registrationNumber, brand, model));
+                    _context.SaveChanges();
+                }
             }
         }
 
-        internal override void Update(ConsoleKeyInfo key) { }
+        internal override void Update(ConsoleKeyInfo key)
+        {
+
+        }
 
         internal override void RemoveFromList(ConsoleKeyInfo key)
         {
-            ShowOperationInfo($"{key.KeyChar} Добавление автомобиля в список");
+            ShowOperationInfo($"{key.KeyChar} Удаление автомобиля из списка");
 
             Console.WriteLine();
 
-            // TODO: вывод списка водителей
-
-#if DEBUG
-
-
-            foreach (var item in _cars)
-                Console.WriteLine(item.ToString());
-            Console.WriteLine();
-
-#endif
-
-
-            string numberString = RequestToEnter("Введите Номер автомобиля из списка");
-
-            bool isParse = int.TryParse(numberString, out int number);
-
-            // TODO: Удаление водителя из БД
-
-#if DEBUG
-            if (isParse)
+            using (_context)
             {
-                Car car = _cars.FirstOrDefault(x => x.Id == number);
+                foreach (Car item in _context.Cars)
+                {
+                    Console.WriteLine(item.ToString());
+                }
+
+                RequestToEnter("Введите номер автомобиля из списка", out int number);
+
+                Car car = _context.Cars.FirstOrDefault(x => x.Id == number) as Car;
 
                 if (car is not null)
                 {
-
-
-
-                    _cars.Remove(car);
-
-
+                    _context.Cars.Remove(car);
+                    _context.SaveChanges();
                     return;
                 }
-
-                throw new Exception($"A car with ID {number} do not exist in the list!");
-
+                Console.WriteLine("Такого автомобиля в списке нет.");
             }
-
-            throw new ArgumentException($"\"{numberString}\" is not a number!");
-#endif
-
 
         }
 
@@ -108,19 +77,14 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            // TODO: вывод списка водителей
-
-#if DEBUG
-
-            foreach (var item in _cars)
-                Console.WriteLine(item.ToString());
-
-            Console.WriteLine();
-
-#endif
-            
+            using (_context)
+            {
+                foreach (Car car in _context.Cars)
+                {
+                    Console.WriteLine(car.ToString());
+                }
+            }
         }
 
-        
     }
 }
