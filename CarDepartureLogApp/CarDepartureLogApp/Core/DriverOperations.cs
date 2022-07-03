@@ -52,7 +52,7 @@ namespace CarDepartureLogApp.Core
 
                 RequestToEnter("Введите номер водителя из списка", out int number);
 
-                Driver driver = _context.Drivers.FirstOrDefault(x => x.Id == number) as Driver;
+                Driver driver = _context.Drivers.FirstOrDefault(x => x.Id == number);
 
                 if (driver is not null)
                 {

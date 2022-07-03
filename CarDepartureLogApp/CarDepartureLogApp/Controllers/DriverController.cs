@@ -6,45 +6,59 @@ namespace CarDepartureLogApp.Controllers
 {
     public class DriverController
     {
-        private readonly AppMySqlContext _context;
+        //private readonly AppMySqlContext _context;
 
-        public DriverController()
-        {
-            _context = AppMySqlContext.GetAppContext();
-        }
+        //public DriverController()
+        //{
+        //    _context = AppMySqlContext.GetAppContext();
+        //}
         public void Create(string name, string middleName, string surName)
         {
-            using (_context)
+            using (var _context = new AppMySqlContext())
             {
                 _context.Drivers.Add(new Driver(name, middleName, surName));
 
                 _context.SaveChanges();
             }
         }
-        public IDriver Read(int id)
-        {
-            IDriver driver = new Driver();
 
-            using (_context)
+        public Driver Read(int id)
+        {
+            Driver driver = new Driver();
+
+            using (var _context = new AppMySqlContext())
             {
                 driver = _context.Drivers.Where(x => x.Id == id).FirstOrDefault();
             }
             return driver;
         }
-        public void Update(IDriver driver, string surName)
+
+        public List<Driver> ReadAll()
         {
-            using (_context)
+            List<Driver> drivers = new List<Driver>();
+
+            using (var _context = new AppMySqlContext())
+            {
+                drivers = _context.Drivers.ToList();
+            }
+            return drivers;
+        }
+
+        public void Update(Driver driver, string surName)
+        {
+            using (var _context = new AppMySqlContext())
             {
                 _context.Drivers.Where(x => x.Equals(driver)).FirstOrDefault().SurName = surName;
 
                 _context.SaveChanges();
             }
         }
-        public void Delete(IDriver driver)
+
+        public void Delete(Driver driver)
         {
-            using (_context)
+            using (var _context = new AppMySqlContext())
             {
-                _context.Remove<IDriver>(driver);
+                _context.Remove<Driver>(driver);
 
                 _context.SaveChanges();
             }

@@ -12,26 +12,26 @@ namespace CarDepartureLogApp.Context
 {
     public class AppMySqlContext : DbContext, IAppContext
     {
-        #region Реализация Singleton
+        //#region Реализация Singleton
 
-        private static readonly AppMySqlContext? _appMySqlContext;
+        //private static readonly AppMySqlContext? _appMySqlContext;
 
-        public static AppMySqlContext GetAppContext()
-        {
-            return _appMySqlContext ?? new AppMySqlContext(DbOptions.ConnectionString);
-        }
+        //public static AppMySqlContext GetAppContext()
+        //{
+        //    return _appMySqlContext ?? new AppMySqlContext(DbOptions.ConnectionString);
+        //}
 
-        #endregion
+        //#endregion
 
         private readonly string? _connectionString;
 
-        public DbSet<IDepartureRecord> DepartureRecords { get; set; } = null!;
-        public DbSet<ICar> Cars { get; set; } = null!;
-        public DbSet<IDriver> Drivers { get; set; } = null!;
+        public DbSet<DepartureRecord> DepartureRecords { get; set; } = null!;
+        public DbSet<Car> Cars { get; set; } = null!;
+        public DbSet<Driver> Drivers { get; set; } = null!;
 
-        private AppMySqlContext()
+        public AppMySqlContext()
         {
-
+            _connectionString = DbOptions.ConnectionString;
         }
 
         private AppMySqlContext(string connectionString)

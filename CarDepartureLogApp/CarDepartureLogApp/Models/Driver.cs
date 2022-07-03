@@ -19,7 +19,7 @@ namespace CarDepartureLogApp.Models
         public string Name { get; set; }
         public string MiddleName { get; set; }
         public string SurName { get; set; }
-        public List<IDepartureRecord> DepartureRecords { get; set; } = new();
+        public List<DepartureRecord> DepartureRecords { get; set; } = new();
 
         public override string ToString()
         {

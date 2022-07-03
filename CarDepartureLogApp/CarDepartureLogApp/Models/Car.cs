@@ -24,7 +24,7 @@ namespace CarDepartureLogApp.Models
         public string Model { get; set; }
         public bool Away { get; set; }
 
-        public List<IDepartureRecord> DepartureRecords { get; set; } = new();
+        public List<DepartureRecord> DepartureRecords { get; set; } = new();
 
         public override string ToString()
         {

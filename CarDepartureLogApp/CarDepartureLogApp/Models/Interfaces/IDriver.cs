@@ -22,6 +22,6 @@
         /// <summary>
         /// Навигационное свойство список записей о выездах данного водителя
         /// </summary>
-        public List<IDepartureRecord> DepartureRecords { get; set; }
+        public List<DepartureRecord> DepartureRecords { get; set; }
     }
 }

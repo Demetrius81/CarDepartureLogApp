@@ -5,21 +5,15 @@ using CarDepartureLogApp.Models.Interfaces;
 namespace CarDepartureLogApp.Controllers
 {
     public class DepartureLogController
-    {
-        private readonly AppMySqlContext _context;
-
-        public DepartureLogController()
-        {
-            _context = AppMySqlContext.GetAppContext();
-        }
+    {        
         public void Create(DateTime departureTime,
-                               int odometerBeforeLeaving,
-                               string purposeOfDeparture,
-                               string description,
-                               ICar car,
-                               IDriver driver)
+                           int odometerBeforeLeaving,
+                           string purposeOfDeparture,
+                           string description,
+                           Car car,
+                           Driver driver)
         {
-            using (_context)
+            using (var _context = new AppMySqlContext())
             {
                 _context.DepartureRecords.Add(new DepartureRecord(departureTime,
                                                                   odometerBeforeLeaving,
@@ -31,37 +25,120 @@ namespace CarDepartureLogApp.Controllers
                 _context.SaveChanges();
             }
         }
-        public IDepartureRecord Read(int id)
-        {
-            IDepartureRecord departureRecord = new DepartureRecord();
 
-            using (_context)
+        public void CreateNew(DateTime departureTime,
+                              DateTime returnTime,
+                              int odometerBeforeLeaving,
+                              int odometerAfterLeaving,
+                              string purposeOfDeparture,
+                              string description,
+                              Car car,
+                              Driver driver)
+        {
+            using (var _context = new AppMySqlContext())
+            {
+                _context.DepartureRecords.Add(new DepartureRecord(departureTime,
+                                                                  returnTime,
+                                                                  odometerBeforeLeaving,
+                                                                  odometerAfterLeaving,
+                                                                  purposeOfDeparture,
+                                                                  description,
+                                                                  car,
+                                                                  driver));
+
+                _context.SaveChanges();
+            }
+        }
+
+        public DepartureRecord Read(int id)
+        {
+            DepartureRecord departureRecord = new DepartureRecord();
+
+            using (var _context = new AppMySqlContext())
             {
                 departureRecord = _context.DepartureRecords.Where(x => x.Id == id).FirstOrDefault();
             }
             return departureRecord;
         }
-        public void Update(IDepartureRecord departureRecord, DateTime returnTime, int odometerAfterLeaving, bool away)
+
+        public List<DepartureRecord> ReadLastDay()
         {
-            using (_context)
+            List<DepartureRecord> records = new List<DepartureRecord>();
+
+            using (var _context = new AppMySqlContext())
             {
-                _context.DepartureRecords.Where(x => x.Equals(departureRecord)).FirstOrDefault()
-                    .Car.Away = away;
+                records = _context.DepartureRecords
+                    .Where(x => x.DepartureTime > DateTime.Now.AddHours(-24)
+                             && x.DepartureTime <= DateTime.Now)
+                    .ToList();
+            }
+            return records;
+        }
 
-                _context.DepartureRecords.Where(x => x.Equals(departureRecord)).FirstOrDefault()
-                    .ReturnTime = returnTime;
+        public List<DepartureRecord> ReadLastAway()
+        {
+            List<DepartureRecord> records = new List<DepartureRecord>();
 
-                _context.DepartureRecords.Where(x => x.Equals(departureRecord)).FirstOrDefault()
-                    .OdometerAfterLeaving = odometerAfterLeaving;
+            using (var _context = new AppMySqlContext())
+            {
+                records = _context.DepartureRecords
+                    .Where(x => x.Car.Away == true)
+                    .ToList();
+            }
+            return records;
+        }
+
+        public List<DepartureRecord> ReadLastAll()
+        {
+            List<DepartureRecord> records = new List<DepartureRecord>();
+
+            using (var _context = new AppMySqlContext())
+            {
+                records = _context.DepartureRecords.ToList();
+            }
+            return records;
+        }
+
+        public void Update(DepartureRecord departureRecord, DateTime returnTime, int odometerAfterLeaving, bool away)
+        {
+            using (var _context = new AppMySqlContext())
+            {
+                var record = _context.DepartureRecords.Where(x => x.Equals(departureRecord)).FirstOrDefault();
+
+                record.Car.Away = away;
+
+                record.ReturnTime = returnTime;
+
+                record.OdometerAfterLeaving = odometerAfterLeaving;
 
                 _context.SaveChanges();
             }
         }
-        public void Delete(IDepartureRecord departureRecord)
+        public void Delete(DepartureRecord departureRecord)
         {
-            using (_context)
+            using (var _context = new AppMySqlContext())
             {
-                _context.Remove<IDepartureRecord>(departureRecord);
+                _context.Remove<DepartureRecord>(departureRecord);
+
+                _context.SaveChanges();
+            }
+        }
+
+        public void DeleteByTwoYearsOldAndOlder()
+        {
+            List<DepartureRecord> recordsToRemove = new List<DepartureRecord>();
+
+            using (var _context = new AppMySqlContext())
+            {
+                recordsToRemove = _context.DepartureRecords
+                    .Where(x => x.DepartureTime < DateTime.Now.AddYears(-2))
+                    .ToList();
+
+                foreach (var item in recordsToRemove)
+                {
+                    _context.Remove<DepartureRecord>(item);
+
+                }
 
                 _context.SaveChanges();
             }

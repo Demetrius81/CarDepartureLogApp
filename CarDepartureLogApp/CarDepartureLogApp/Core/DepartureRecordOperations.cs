@@ -41,7 +41,7 @@ namespace CarDepartureLogApp.Core
 
                 using (_context)
                 {
-                    car = _context.Cars.Where(x => x.Id == carId).FirstOrDefault() as Car;
+                    car = _context.Cars.Where(x => x.Id == carId).FirstOrDefault();
                 }
 
                 if (car.Away)
@@ -71,7 +71,7 @@ namespace CarDepartureLogApp.Core
                 RequestToEnter("Введите ID водителя", out int driverId);
                 using (_context)
                 {
-                    driver = _context.Drivers.Where(x => x.Id == driverId).FirstOrDefault() as Driver;
+                    driver = _context.Drivers.Where(x => x.Id == driverId).FirstOrDefault();
                 }
 
                 if (driver == null)
@@ -87,7 +87,7 @@ namespace CarDepartureLogApp.Core
 
             using (_context)
             {
-                lastRecordSelectedCar = _context.DepartureRecords.Where(x => x.Equals(car)).LastOrDefault() as DepartureRecord;
+                lastRecordSelectedCar = _context.DepartureRecords.Where(x => x.Equals(car)).LastOrDefault();
             }
 
             if (lastRecordSelectedCar == null)
@@ -143,7 +143,7 @@ namespace CarDepartureLogApp.Core
 
                 RequestToEnter("Введите ID записи для удаления.", out int id);
 
-                DepartureRecord record = _context.DepartureRecords.FirstOrDefault(x => x.Id == id) as DepartureRecord;
+                DepartureRecord record = _context.DepartureRecords.FirstOrDefault(x => x.Id == id);
 
                 if (record is not null)
                 {

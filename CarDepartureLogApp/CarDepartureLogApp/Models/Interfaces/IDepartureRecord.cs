@@ -44,10 +44,10 @@
         /// <summary>
         /// Навигационное свойство автомобиль в текущей записи
         /// </summary>
-        public ICar? Car { get; set; }
+        public Car? Car { get; set; }
         /// <summary>
         /// Навигационное свойство водитель автомобиля в текущей записи
         /// </summary>
-        public IDriver? Driver { get; set; }       
+        public Driver? Driver { get; set; }       
     }
 }

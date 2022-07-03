@@ -16,12 +16,13 @@ namespace CarDepartureLogApp.Models
         {
 
         }
+
         public DepartureRecord(DateTime departureTime,
                                int odometerBeforeLeaving,
                                string purposeOfDeparture,
                                string description,
-                               ICar car,
-                               IDriver driver)
+                               Car car,
+                               Driver driver)
         {
             DepartureTime = departureTime;
             OdometerBeforeLeaving = odometerBeforeLeaving;
@@ -31,8 +32,27 @@ namespace CarDepartureLogApp.Models
             Driver = driver;
         }
 
-        public ICar Car { get; set; }
-        public IDriver Driver { get; set; }
+        public DepartureRecord(DateTime departureTime,
+                               DateTime returnTime,
+                               int odometerBeforeLeaving,
+                               int odometerAfterLeaving,
+                               string purposeOfDeparture,
+                               string description,
+                               Car car,
+                               Driver driver)
+        {
+            DepartureTime = departureTime;
+            ReturnTime = returnTime;
+            OdometerBeforeLeaving = odometerBeforeLeaving;
+            OdometerAfterLeaving = odometerAfterLeaving;
+            PurposeOfDeparture = purposeOfDeparture;
+            Description = description;
+            Car = car;
+            Driver = driver;
+        }
+
+        public Car Car { get; set; }
+        public Driver Driver { get; set; }
 
         public int CarId { get; set; }
         public int DriverId { get; set; }
@@ -78,6 +98,6 @@ namespace CarDepartureLogApp.Models
                 return true;
             }
             return false;
-        }
+        }        
     }
 }

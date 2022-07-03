@@ -57,19 +57,23 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.D1:
                                         {
                                             listOfDepartureOperations.AddToList(consoleKeyInfo);
-                                            
+
                                             break;
                                         }
                                     case ConsoleKey.NumPad2:
                                     case ConsoleKey.D2:
                                         {
-                                            // Отметка о возвращении
+                                            listOfDepartureOperations.Update(consoleKeyInfo);
+
                                             break;
                                         }
                                     case ConsoleKey.NumPad3:
                                     case ConsoleKey.D3:
                                         {
-                                            // Просмотр выездов за сегодня
+                                            listOfDepartureOperations.ShowAll(consoleKeyInfo);
+
+                                            listOfDepartureOperations.PressAKey();
+
                                             break;
                                         }
                                     default:
@@ -107,7 +111,7 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.D1:
                                         {
                                             carOperations.AddToList(consoleKeyInfo);
-                                            
+
                                             break;
                                         }
                                     case ConsoleKey.NumPad2:
@@ -160,14 +164,14 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.D1:
                                         {
                                             driverOperations.AddToList(consoleKeyInfo);
-                                            
+
                                             break;
                                         }
                                     case ConsoleKey.NumPad2:
                                     case ConsoleKey.D2:
                                         {
                                             driverOperations.RemoveFromList(consoleKeyInfo);
-                                            
+
                                             break;
                                         }
                                     case ConsoleKey.NumPad3:

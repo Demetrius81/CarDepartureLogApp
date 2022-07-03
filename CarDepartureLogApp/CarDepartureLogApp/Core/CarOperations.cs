@@ -58,7 +58,7 @@ namespace CarDepartureLogApp.Core
 
                 RequestToEnter("Введите номер автомобиля из списка", out int number);
 
-                Car car = _context.Cars.FirstOrDefault(x => x.Id == number) as Car;
+                Car car = _context.Cars.FirstOrDefault(x => x.Id == number);
 
                 if (car is not null)
                 {
