@@ -30,6 +30,7 @@ namespace CarDepartureLogApp.Core
             Console.WriteLine("Для добавления записи о выезде\t\tнажмите 1");
             Console.WriteLine("Для отметки о возвращении\t\tнажмите 2");
             Console.WriteLine("Для просмотра сегодняшних выездов\tнажмите 3");
+            Console.WriteLine("Для добавления записи о выезденового автомобиля нажмите 4");
             Console.WriteLine("Для выхода в главное меню\t\tнажмите ESC");
 
             Console.WriteLine("====================================================");

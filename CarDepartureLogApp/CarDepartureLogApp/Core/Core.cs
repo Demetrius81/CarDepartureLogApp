@@ -56,7 +56,7 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad1:
                                     case ConsoleKey.D1:
                                         {
-                                            listOfDepartureOperations.AddToList(consoleKeyInfo);
+                                            listOfDepartureOperations.AddToListCarOut(consoleKeyInfo);
 
                                             break;
                                         }
@@ -73,6 +73,13 @@ namespace CarDepartureLogApp.Core
                                             listOfDepartureOperations.ShowAll(consoleKeyInfo);
 
                                             listOfDepartureOperations.PressAKey();
+
+                                            break;
+                                        }
+                                    case ConsoleKey.NumPad4:
+                                    case ConsoleKey.D4:
+                                        {
+                                            listOfDepartureOperations.AddToListNewCar(consoleKeyInfo);
 
                                             break;
                                         }
@@ -110,7 +117,7 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad1:
                                     case ConsoleKey.D1:
                                         {
-                                            carOperations.AddToList(consoleKeyInfo);
+                                            carOperations.AddToListCarOut(consoleKeyInfo);
 
                                             break;
                                         }
@@ -163,7 +170,7 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad1:
                                     case ConsoleKey.D1:
                                         {
-                                            driverOperations.AddToList(consoleKeyInfo);
+                                            driverOperations.AddToListCarOut(consoleKeyInfo);
 
                                             break;
                                         }

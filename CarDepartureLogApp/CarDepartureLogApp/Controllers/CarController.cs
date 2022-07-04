@@ -5,14 +5,7 @@ using CarDepartureLogApp.Models.Interfaces;
 namespace CarDepartureLogApp.Controllers
 {
     public class CarController
-    {
-        //private readonly AppMySqlContext _context;
-
-        //public CarController()
-        //{
-        //    _context = AppMySqlContext.GetAppContext();
-        //}
-
+    {        
         public void Create(string registrationNumber, string brand, string model)
         {
             using (var _context = new AppMySqlContext())

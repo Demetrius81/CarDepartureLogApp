@@ -115,7 +115,7 @@ namespace CarDepartureLogApp.Core
 
         internal abstract void Update(ConsoleKeyInfo key);
         internal abstract void RemoveFromList(ConsoleKeyInfo key);
-        internal abstract void AddToList(ConsoleKeyInfo key);
+        internal abstract void AddToListCarOut(ConsoleKeyInfo key);
         internal abstract void ShowAll(ConsoleKeyInfo key);
     }
 }

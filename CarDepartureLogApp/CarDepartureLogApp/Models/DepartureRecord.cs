@@ -57,9 +57,14 @@ namespace CarDepartureLogApp.Models
         public int CarId { get; set; }
         public int DriverId { get; set; }
 
+        public string ToStringAway()
+        {
+            return $"{Car?.RegistrationNumber} {Car?.Brand} {Driver} {PurposeOfDeparture} {DepartureTime}";
+        }
+
         public override string ToString()
         {
-            return $"{Car?.RegistrationNumber} {Driver} {PurposeOfDeparture} {DepartureTime} {ReturnTime}";
+            return $"{Car?.RegistrationNumber} {Car?.Brand} {Car?.Model} {Driver} {PurposeOfDeparture} {DepartureTime} {(ReturnTime == default ? "на выезде" : ReturnTime)} {Description}";
         }
         public override bool Equals(object? obj)
         {
@@ -98,6 +103,6 @@ namespace CarDepartureLogApp.Models
                 return true;
             }
             return false;
-        }        
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CarDepartureLogApp.Context;
+using CarDepartureLogApp.Controllers;
 using CarDepartureLogApp.Models;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,13 @@ namespace CarDepartureLogApp.Core
 {
     internal class DriverOperations : BaseMenuOperations
     {
-        private readonly AppMySqlContext _context;
+        private readonly DriverController _driverController;
 
-        public DriverOperations(AppMySqlContext context = null)
+        public DriverOperations()
         {
-            _context = context == null ? AppMySqlContext.GetAppContext() : context;
+            _driverController = new DriverController();
         }
-
-        internal override void AddToList(ConsoleKeyInfo key)
+        internal override void AddToListCarOut(ConsoleKeyInfo key)
         {
             ShowOperationInfo($"{key.KeyChar} Добавление водителя в список");
 
@@ -29,11 +29,7 @@ namespace CarDepartureLogApp.Core
 
             if (isIt)
             {
-                using (_context)
-                {
-                    _context.Drivers.Add(new Driver(firstName, middleName, surName));
-                    _context.SaveChanges();
-                }
+                _driverController.Create(firstName, middleName, surName);
             }
         }
 
@@ -43,25 +39,28 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            using (_context)
+            List<Driver> drivers = _driverController.ReadAll();
+
+            ShowOperationInfo($"{key.KeyChar} Список водителей");
+
+            Console.WriteLine();
+
+            foreach (var item in drivers)
             {
-                foreach (Driver item in _context.Drivers)
-                {
-                    Console.WriteLine(item.ToString());
-                }
-
-                RequestToEnter("Введите номер водителя из списка", out int number);
-
-                Driver driver = _context.Drivers.FirstOrDefault(x => x.Id == number);
-
-                if (driver is not null)
-                {
-                    _context.Drivers.Remove(driver);
-                    _context.SaveChanges();
-                    return;
-                }
-                Console.WriteLine("Такого водителя в списке нет.");
+                Console.WriteLine(item.ToString());
             }
+
+            RequestToEnter("Введите номер водителя из списка", out int number);
+
+            Driver driver = drivers.FirstOrDefault(x => x.Id == number);
+
+            if (driver is not null)
+            {
+                _driverController.Delete(driver);
+                return;
+            }
+            Console.WriteLine("Такого водителя в списке нет.");
+
         }
 
         internal override void Update(ConsoleKeyInfo key)
@@ -75,13 +74,12 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            using (_context)
+            List<Driver> drivers = _driverController.ReadAll();
+
+            foreach (var item in drivers)
             {
-                foreach (var driver in _context.Drivers)
-                {
-                    Console.WriteLine(driver.ToString());
-                }
+                Console.WriteLine(item.ToString());
             }
-        }        
+        }
     }
 }

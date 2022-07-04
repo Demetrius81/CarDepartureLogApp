@@ -1,4 +1,5 @@
 ﻿using CarDepartureLogApp.Context;
+using CarDepartureLogApp.Controllers;
 using CarDepartureLogApp.Models;
 using CarDepartureLogApp.Models.Interfaces;
 using System;
@@ -11,14 +12,14 @@ namespace CarDepartureLogApp.Core
 {
     internal class CarOperations : BaseMenuOperations
     {
-        private readonly AppMySqlContext _context;
-        
-        public CarOperations(AppMySqlContext context = null)
+        private readonly CarController _carController;
+
+        public CarOperations()
         {
-            _context = context == null ? AppMySqlContext.GetAppContext() : context;
+            _carController = new CarController();
         }
 
-        internal override void AddToList(ConsoleKeyInfo key)
+        internal override void AddToListCarOut(ConsoleKeyInfo key)
         {
             ShowOperationInfo($"{key.KeyChar} Добавление автомобиля в список");
 
@@ -30,11 +31,7 @@ namespace CarDepartureLogApp.Core
 
             if (isIt)
             {
-                using (_context)
-                {
-                    _context.Cars.Add(new Car(registrationNumber, brand, model));
-                    _context.SaveChanges();
-                }
+                _carController.Create(registrationNumber, brand, model);
             }
         }
 
@@ -49,40 +46,43 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            using (_context)
+            List<Car> cars = new List<Car>();
+
+            ShowOperationInfo($"{key.KeyChar} Список автомобилей");
+
+            Console.WriteLine();
+
+            foreach (var item in cars)
             {
-                foreach (Car item in _context.Cars)
-                {
-                    Console.WriteLine(item.ToString());
-                }
-
-                RequestToEnter("Введите номер автомобиля из списка", out int number);
-
-                Car car = _context.Cars.FirstOrDefault(x => x.Id == number);
-
-                if (car is not null)
-                {
-                    _context.Cars.Remove(car);
-                    _context.SaveChanges();
-                    return;
-                }
-                Console.WriteLine("Такого автомобиля в списке нет.");
+                Console.WriteLine(item.ToString());
             }
+            
+            RequestToEnter("Введите номер автомобиля из списка", out int number);
+
+            Car car = cars.FirstOrDefault(x => x.Id == number);
+
+            if (car is not null)
+            {
+                _carController.Delete(car);
+
+                return;
+            }
+            Console.WriteLine("Такого автомобиля в списке нет.");
+
 
         }
 
         internal override void ShowAll(ConsoleKeyInfo key)
         {
+            List<Car> cars = new List<Car>();
+
             ShowOperationInfo($"{key.KeyChar} Список автомобилей");
 
             Console.WriteLine();
 
-            using (_context)
+            foreach (var item in cars)
             {
-                foreach (Car car in _context.Cars)
-                {
-                    Console.WriteLine(car.ToString());
-                }
+                Console.WriteLine(item.ToString());
             }
         }
 

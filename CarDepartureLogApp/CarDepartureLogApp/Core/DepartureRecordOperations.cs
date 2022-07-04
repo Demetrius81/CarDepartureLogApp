@@ -1,4 +1,5 @@
 ﻿using CarDepartureLogApp.Context;
+using CarDepartureLogApp.Controllers;
 using CarDepartureLogApp.Models;
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,176 @@ namespace CarDepartureLogApp.Core
 {
     internal class DepartureRecordOperations : BaseMenuOperations
     {
-        private readonly AppMySqlContext _context;
+        private readonly DepartureLogController _logController;
+
+        private readonly DriverController _driverController;
+
+        private readonly CarController _carController;
 
         public DepartureRecordOperations()
         {
-            _context = AppMySqlContext.GetAppContext();
+            _logController = new DepartureLogController();
+
+            _driverController = new DriverController();
+
+            _carController = new CarController();
         }
 
-        internal override void AddToList(ConsoleKeyInfo key)
+        internal void AddToListNewCar(ConsoleKeyInfo key)
         {
+            int odometerBeforeLeaving = default;
+            string purposeOfDeparture = default;
+            string description = default;
+            Car car = new();
+            Driver driver = new();
 
+            ShowOperationInfo($"{key.KeyChar} Новая запись о выезде");
 
+            CarOperations carOperations = new CarOperations();
+
+            carOperations.ShowAll(key);
+
+            while (true)
+            {
+                RequestToEnter("Введите ID автомобиля", out int carId);
+
+                car = _carController.ReadAll().Where(x => x.Id == carId).FirstOrDefault();
+
+                if (car.Away)
+                {
+                    Console.Write($"Автомобиль {car.ToString()} на выезде. оформить выезд невозможно. Желаете подолжить? Y/N");
+
+                    ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                    if (userKey == ConsoleKey.N)
+                    {
+                        return;
+                    }
+
+                    continue;
+                }
+
+                if (car == null)
+                {
+                    Console.WriteLine("Автомобиля с введенным ID нет в списке. Желаете подолжить? Y/N");
+
+                    ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                    if (userKey == ConsoleKey.N)
+                    {
+                        return;
+                    }
+
+                    continue;
+                }
+                break;
+            }
+
+            DriverOperations driverOperations = new DriverOperations();
+
+            driverOperations.ShowAll(key);
+
+            while (true)
+            {
+                RequestToEnter("Введите ID водителя", out int driverId);
+
+                driver = _driverController.ReadAll().Where(x => x.Id == driverId).FirstOrDefault();
+
+                if (driver == null)
+                {
+                    Console.WriteLine("Водителя с введенным ID нет в списке. Желаете подолжить? Y/N");
+
+                    ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                    if (userKey == ConsoleKey.N)
+                    {
+                        return;
+                    }
+
+                    continue;
+                }
+                break;
+            }
+
+            RequestToEnter("Введите показания одометра", out odometerBeforeLeaving);
+            purposeOfDeparture = RequestToEnter("Введите цель поездки");
+            description = RequestToEnter("Введите примечания");
+
+            bool isIt = RequestToAdd(car.ToString(), driver.ToString(), $"Показания одометра: {odometerBeforeLeaving}");
+
+            if (isIt)
+            {
+                car.Away = true;
+
+                _logController.Create(DateTime.Now, odometerBeforeLeaving, purposeOfDeparture, description, car, driver);
+            }
+        }
+
+        internal void AddToListCarReturn(ConsoleKeyInfo key)
+        {
+            ShowOperationInfo($"{key.KeyChar} Закрытие записи о выезде");
+
+            List<DepartureRecord> records = _logController.ReadLastAway();
+
+            ShowOperationInfo($"{key.KeyChar} Записи о выезде автомобилей");
+
+            Console.WriteLine();
+
+            foreach (var item in records)
+            {
+                Console.WriteLine(item.ToStringAway());
+            }
+
+            while (true)
+            {
+                RequestToEnter("Введите номер записи из списка", out int number);
+
+                DepartureRecord record = _logController.ReadLastAway().Where(x => x.Id == number).FirstOrDefault();
+
+                if (record == null)
+                {
+                    Console.WriteLine("Записи с введенным ID нет в списке. Желаете подолжить? Y/N");
+
+                    ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                    if (userKey == ConsoleKey.N)
+                    {
+                        return;
+                    }
+
+                    continue;
+                }
+                break;
+
+                RequestToEnter("Введите показания одометра", out int odometerAfterLeaving);
+
+                while (true)
+                {
+                    if (odometerAfterLeaving > record.OdometerBeforeLeaving)
+                    {
+                        _logController.Update(record, DateTime.Now, odometerAfterLeaving);
+
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Показания одометра по возвращении должно быть больше показаний одометра перед выездом!");
+
+                        Console.Write($"Желаете подолжить? Y/N");
+
+                        ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                        if (userKey == ConsoleKey.N)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        internal override void AddToListCarOut(ConsoleKeyInfo key)
+        {
             Car car = new Car();
 
             Driver driver = new Driver();
@@ -29,7 +189,7 @@ namespace CarDepartureLogApp.Core
 
             ShowOperationInfo($"{key.KeyChar} Новая запись о выезде");
 
-            CarOperations carOperations = new CarOperations(_context);
+            CarOperations carOperations = new CarOperations();
 
             carOperations.ShowAll(key);
 
@@ -39,25 +199,32 @@ namespace CarDepartureLogApp.Core
             {
                 RequestToEnter("Введите ID автомобиля", out int carId);
 
-                using (_context)
-                {
-                    car = _context.Cars.Where(x => x.Id == carId).FirstOrDefault();
-                }
+                car = _carController.ReadAll().Where(x => x.Id == carId).FirstOrDefault();
 
                 if (car.Away)
                 {
-                    Console.WriteLine($"Автомобиль {car.ToString()} на выезде. оформить выезд невозможно. Нажмите любую клавишу чтобы продолжить...");
+                    Console.Write($"Автомобиль {car.ToString()} на выезде. оформить выезд невозможно. Желаете подолжить? Y/N");
 
-                    Console.ReadKey(true);
+                    ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                    if (userKey == ConsoleKey.N)
+                    {
+                        return;
+                    }
 
                     continue;
                 }
 
                 if (car == null)
                 {
-                    Console.WriteLine("Автомобиля с введенным ID нет в списке. Нажмите любую клавишу чтобы продолжить...");
+                    Console.WriteLine("Автомобиля с введенным ID нет в списке. Желаете подолжить? Y/N");
 
-                    Console.ReadKey(true);
+                    ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                    if (userKey == ConsoleKey.N)
+                    {
+                        return;
+                    }
 
                     continue;
                 }
@@ -66,33 +233,36 @@ namespace CarDepartureLogApp.Core
 
             DriverOperations driverOperations = new DriverOperations();
 
+            driverOperations.ShowAll(key);
+
             while (true)
             {
                 RequestToEnter("Введите ID водителя", out int driverId);
-                using (_context)
-                {
-                    driver = _context.Drivers.Where(x => x.Id == driverId).FirstOrDefault();
-                }
+
+                driver = _driverController.ReadAll().Where(x => x.Id == driverId).FirstOrDefault();
 
                 if (driver == null)
                 {
-                    Console.WriteLine("Водителя с введенным ID нет в списке. Нажмите любую клавишу чтобы продолжить...");
+                    Console.WriteLine("Водителя с введенным ID нет в списке. Желаете подолжить? Y/N");
 
-                    Console.ReadKey(true);
+                    ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                    if (userKey == ConsoleKey.N)
+                    {
+                        return;
+                    }
 
                     continue;
                 }
                 break;
             }
 
-            using (_context)
-            {
-                lastRecordSelectedCar = _context.DepartureRecords.Where(x => x.Equals(car)).LastOrDefault();
-            }
+
+            lastRecordSelectedCar = _logController.ReadAll().Where(x => x.Equals(car)).LastOrDefault();
 
             if (lastRecordSelectedCar == null)
             {
-                // TODO: здесь вызываем метод создания новой записи с новым автомобилем
+                AddToListNewCar(key);
             }
             else
             {
@@ -106,23 +276,9 @@ namespace CarDepartureLogApp.Core
 
             if (isIt)
             {
-                using (_context)
-                {
-                    _context.DepartureRecords.Add(new DepartureRecord
-                    {
-                        DepartureTime = DateTime.Now,
-                        OdometerBeforeLeaving = odometerBeforeLeaving,
-                        PurposeOfDeparture = purposeOfDeparture,
-                        Description = description,
-                        CarId = car.Id,
-                        DriverId = driver.Id
-                    });
+                car.Away = true;
 
-                    _context.Cars.Where(x => x.Equals(car)).FirstOrDefault().Away = true;
-
-                    _context.SaveChanges();
-
-                }
+                _logController.Create(DateTime.Now, odometerBeforeLeaving, purposeOfDeparture, description, car, driver);
             }
         }
 
@@ -134,25 +290,36 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            using (_context)
+            List<DepartureRecord> records = _logController.ReadAll();
+
+            foreach (var item in records)
             {
-                foreach (var item in _context.DepartureRecords)
-                {
-                    Console.WriteLine(item.ToString());
-                }
-
-                RequestToEnter("Введите ID записи для удаления.", out int id);
-
-                DepartureRecord record = _context.DepartureRecords.FirstOrDefault(x => x.Id == id);
-
-                if (record is not null)
-                {
-                    _context.DepartureRecords.Remove(record);
-                    _context.SaveChanges();
-                    return;
-                }
-                Console.WriteLine("Такой записи нет нет.");
+                Console.WriteLine(item.ToString());
             }
+
+            RequestToEnter("Введите ID записи для удаления", out int id);
+
+            DepartureRecord record = _logController.ReadAll().Where(x => x.Id == id).FirstOrDefault();
+
+            while (true)
+            {
+                if (record == null)
+                {
+                    Console.Write($"Запись с введенным номером отсутствует. Желаете подолжить? Y/N");
+
+                    ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                    if (userKey == ConsoleKey.N)
+                    {
+                        return;
+                    }
+
+                    continue;
+                }
+            }
+
+            _logController.Delete(record);
+
         }
 
         internal override void ShowAll(ConsoleKeyInfo key)
@@ -161,17 +328,11 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            using (_context)
-            { 
-                var records = _context.DepartureRecords
-                    .Where(x => x.DepartureTime > DateTime.Now.AddHours(-24) 
-                             && x.DepartureTime <= DateTime.Now)
-                    .ToList();
+            List<DepartureRecord> records = _logController.ReadLastDay();
 
-                foreach (DepartureRecord record in records)
-                {
-                    Console.WriteLine(record.ToString());
-                }
+            foreach (var item in records)
+            {
+                Console.WriteLine(item.ToString());
             }
         }
 

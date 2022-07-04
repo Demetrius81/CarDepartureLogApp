@@ -27,9 +27,9 @@ namespace CarDepartureLogApp.Controllers
         }
 
         public void CreateNew(DateTime departureTime,
-                              DateTime returnTime,
+                              
                               int odometerBeforeLeaving,
-                              int odometerAfterLeaving,
+                              
                               string purposeOfDeparture,
                               string description,
                               Car car,
@@ -38,9 +38,9 @@ namespace CarDepartureLogApp.Controllers
             using (var _context = new AppMySqlContext())
             {
                 _context.DepartureRecords.Add(new DepartureRecord(departureTime,
-                                                                  returnTime,
+                                                                  
                                                                   odometerBeforeLeaving,
-                                                                  odometerAfterLeaving,
+                                                                  
                                                                   purposeOfDeparture,
                                                                   description,
                                                                   car,
@@ -88,7 +88,7 @@ namespace CarDepartureLogApp.Controllers
             return records;
         }
 
-        public List<DepartureRecord> ReadLastAll()
+        public List<DepartureRecord> ReadAll()
         {
             List<DepartureRecord> records = new List<DepartureRecord>();
 
@@ -99,13 +99,13 @@ namespace CarDepartureLogApp.Controllers
             return records;
         }
 
-        public void Update(DepartureRecord departureRecord, DateTime returnTime, int odometerAfterLeaving, bool away)
+        public void Update(DepartureRecord departureRecord, DateTime returnTime, int odometerAfterLeaving)
         {
             using (var _context = new AppMySqlContext())
             {
                 var record = _context.DepartureRecords.Where(x => x.Equals(departureRecord)).FirstOrDefault();
 
-                record.Car.Away = away;
+                record.Car.Away = false;
 
                 record.ReturnTime = returnTime;
 
