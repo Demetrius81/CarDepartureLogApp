@@ -74,11 +74,11 @@ namespace CarDepartureLogApp.Core
 
         internal override void ShowAll(ConsoleKeyInfo key)
         {
-            List<Car> cars = new List<Car>();
-
             ShowOperationInfo($"{key.KeyChar} Список автомобилей");
 
             Console.WriteLine();
+
+            List<Car> cars = _carController.ReadAll();
 
             foreach (var item in cars)
             {

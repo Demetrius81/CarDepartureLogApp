@@ -110,9 +110,11 @@ namespace CarDepartureLogApp.Core
 
             if (isIt)
             {
-                car.Away = true;
+                
+                _logController.Create(DateTime.Now, odometerBeforeLeaving, purposeOfDeparture, description, car.Id, driver.Id);
 
-                _logController.Create(DateTime.Now, odometerBeforeLeaving, purposeOfDeparture, description, car, driver);
+                _carController.Update(car, true);               
+
             }
         }
 
@@ -149,8 +151,7 @@ namespace CarDepartureLogApp.Core
                     }
 
                     continue;
-                }
-                break;
+                }                
 
                 RequestToEnter("Введите показания одометра", out int odometerAfterLeaving);
 
@@ -159,6 +160,8 @@ namespace CarDepartureLogApp.Core
                     if (odometerAfterLeaving > record.OdometerBeforeLeaving)
                     {
                         _logController.Update(record, DateTime.Now, odometerAfterLeaving);
+
+                        _carController.Update(_carController.Read(record.CarId), false);
 
                         return;
                     }
@@ -278,7 +281,9 @@ namespace CarDepartureLogApp.Core
             {
                 car.Away = true;
 
-                _logController.Create(DateTime.Now, odometerBeforeLeaving, purposeOfDeparture, description, car, driver);
+                _logController.Create(DateTime.Now, odometerBeforeLeaving, purposeOfDeparture, description, car.Id, driver.Id);
+
+                _carController.Update(car, true);
             }
         }
 

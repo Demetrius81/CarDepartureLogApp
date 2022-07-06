@@ -63,7 +63,7 @@ namespace CarDepartureLogApp.Core
                                     case ConsoleKey.NumPad2:
                                     case ConsoleKey.D2:
                                         {
-                                            listOfDepartureOperations.Update(consoleKeyInfo);
+                                            listOfDepartureOperations.AddToListCarReturn(consoleKeyInfo);
 
                                             break;
                                         }

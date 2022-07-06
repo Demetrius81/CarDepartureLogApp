@@ -10,8 +10,8 @@ namespace CarDepartureLogApp.Controllers
                            int odometerBeforeLeaving,
                            string purposeOfDeparture,
                            string description,
-                           Car car,
-                           Driver driver)
+                           int carId,
+                           int driverId)
         {
             using (var _context = new AppMySqlContext())
             {
@@ -19,8 +19,8 @@ namespace CarDepartureLogApp.Controllers
                                                                   odometerBeforeLeaving,
                                                                   purposeOfDeparture,
                                                                   description,
-                                                                  car,
-                                                                  driver));
+                                                                  carId,
+                                                                  driverId));
 
                 _context.SaveChanges();
             }
@@ -32,8 +32,8 @@ namespace CarDepartureLogApp.Controllers
                               
                               string purposeOfDeparture,
                               string description,
-                              Car car,
-                              Driver driver)
+                              int carId,
+                              int driverId)
         {
             using (var _context = new AppMySqlContext())
             {
@@ -43,8 +43,8 @@ namespace CarDepartureLogApp.Controllers
                                                                   
                                                                   purposeOfDeparture,
                                                                   description,
-                                                                  car,
-                                                                  driver));
+                                                                  carId,
+                                                                  driverId));
 
                 _context.SaveChanges();
             }
@@ -105,7 +105,7 @@ namespace CarDepartureLogApp.Controllers
             {
                 var record = _context.DepartureRecords.Where(x => x.Equals(departureRecord)).FirstOrDefault();
 
-                record.Car.Away = false;
+                //record.Car.Away = false;
 
                 record.ReturnTime = returnTime;
 

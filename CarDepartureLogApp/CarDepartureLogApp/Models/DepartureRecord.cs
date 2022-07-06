@@ -21,15 +21,15 @@ namespace CarDepartureLogApp.Models
                                int odometerBeforeLeaving,
                                string purposeOfDeparture,
                                string description,
-                               Car car,
-                               Driver driver)
+                               int carId,
+                               int driverId)
         {
             DepartureTime = departureTime;
             OdometerBeforeLeaving = odometerBeforeLeaving;
             PurposeOfDeparture = purposeOfDeparture;
             Description = description;
-            Car = car;
-            Driver = driver;
+            CarId = carId;
+            DriverId = driverId;
         }
 
         public DepartureRecord(DateTime departureTime,
@@ -38,8 +38,8 @@ namespace CarDepartureLogApp.Models
                                int odometerAfterLeaving,
                                string purposeOfDeparture,
                                string description,
-                               Car car,
-                               Driver driver)
+                               int carId,
+                               int driverId)
         {
             DepartureTime = departureTime;
             ReturnTime = returnTime;
@@ -47,8 +47,8 @@ namespace CarDepartureLogApp.Models
             OdometerAfterLeaving = odometerAfterLeaving;
             PurposeOfDeparture = purposeOfDeparture;
             Description = description;
-            Car = car;
-            Driver = driver;
+            CarId = carId;
+            DriverId = driverId;
         }
 
         public Car Car { get; set; }
@@ -59,12 +59,12 @@ namespace CarDepartureLogApp.Models
 
         public string ToStringAway()
         {
-            return $"{Car?.RegistrationNumber} {Car?.Brand} {Driver} {PurposeOfDeparture} {DepartureTime}";
+            return $"{Id} {Car?.RegistrationNumber} {Car?.Brand} {Driver} {PurposeOfDeparture} {DepartureTime} {OdometerBeforeLeaving}";
         }
 
         public override string ToString()
         {
-            return $"{Car?.RegistrationNumber} {Car?.Brand} {Car?.Model} {Driver} {PurposeOfDeparture} {DepartureTime} {(ReturnTime == default ? "на выезде" : ReturnTime)} {Description}";
+            return $"{Id} {Car?.RegistrationNumber} {Car?.Brand} {Car?.Model} {Driver} {PurposeOfDeparture} {DepartureTime} {(ReturnTime == default ? "на выезде" : ReturnTime)} {Description}";
         }
         public override bool Equals(object? obj)
         {
