@@ -29,10 +29,10 @@ namespace CarDepartureLogApp.Core
         internal void AddToListNewCar(ConsoleKeyInfo key)
         {
             int odometerBeforeLeaving = default;
-            string purposeOfDeparture = default;
-            string description = default;
-            Car car = new();
-            Driver driver = new();
+            string? purposeOfDeparture = default;
+            string? description = default;
+            Car? car;
+            Driver? driver;
 
             ShowOperationInfo($"{key.KeyChar} Новая запись о выезде");
 
@@ -46,7 +46,7 @@ namespace CarDepartureLogApp.Core
 
                 car = _carController.ReadAll().Where(x => x.Id == carId).FirstOrDefault();
 
-                if (car.Away)
+                if (car != null && car.Away)
                 {
                     Console.Write($"Автомобиль {car.ToString()} на выезде. оформить выезд невозможно. Желаете подолжить? Y/N");
 
@@ -110,11 +110,9 @@ namespace CarDepartureLogApp.Core
 
             if (isIt)
             {
-                
                 _logController.Create(DateTime.Now, odometerBeforeLeaving, purposeOfDeparture, description, car.Id, driver.Id);
 
-                _carController.Update(car, true);               
-
+                _carController.Update(car, true);
             }
         }
 
@@ -137,7 +135,7 @@ namespace CarDepartureLogApp.Core
             {
                 RequestToEnter("Введите номер записи из списка", out int number);
 
-                DepartureRecord record = _logController.ReadLastAway().Where(x => x.Id == number).FirstOrDefault();
+                DepartureRecord? record = _logController.Read(number);
 
                 if (record == null)
                 {
@@ -151,7 +149,7 @@ namespace CarDepartureLogApp.Core
                     }
 
                     continue;
-                }                
+                }
 
                 RequestToEnter("Введите показания одометра", out int odometerAfterLeaving);
 
@@ -184,11 +182,11 @@ namespace CarDepartureLogApp.Core
 
         internal override void AddToListCarOut(ConsoleKeyInfo key)
         {
-            Car car = new Car();
+            Car? car;
 
-            Driver driver = new Driver();
+            Driver? driver;
 
-            DepartureRecord lastRecordSelectedCar = null;
+            DepartureRecord? lastRecordSelectedCar = null;
 
             ShowOperationInfo($"{key.KeyChar} Новая запись о выезде");
 
@@ -204,7 +202,7 @@ namespace CarDepartureLogApp.Core
 
                 car = _carController.ReadAll().Where(x => x.Id == carId).FirstOrDefault();
 
-                if (car.Away)
+                if (car != null && car.Away)
                 {
                     Console.Write($"Автомобиль {car.ToString()} на выезде. оформить выезд невозможно. Желаете подолжить? Y/N");
 
@@ -304,23 +302,16 @@ namespace CarDepartureLogApp.Core
 
             RequestToEnter("Введите ID записи для удаления", out int id);
 
-            DepartureRecord record = _logController.ReadAll().Where(x => x.Id == id).FirstOrDefault();
+            DepartureRecord? record = _logController.ReadAll().Where(x => x.Id == id).FirstOrDefault();
 
-            while (true)
+
+            if (record == null)
             {
-                if (record == null)
-                {
-                    Console.Write($"Запись с введенным номером отсутствует. Желаете подолжить? Y/N");
+                Console.Write($"Запись с введенным номером отсутствует.");
 
-                    ConsoleKey userKey = Console.ReadKey(true).Key;
+                PressAKey();
 
-                    if (userKey == ConsoleKey.N)
-                    {
-                        return;
-                    }
-
-                    continue;
-                }
+                return;
             }
 
             _logController.Delete(record);

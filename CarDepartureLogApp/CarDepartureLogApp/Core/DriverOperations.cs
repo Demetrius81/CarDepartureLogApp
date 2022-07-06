@@ -35,7 +35,7 @@ namespace CarDepartureLogApp.Core
 
         internal override void RemoveFromList(ConsoleKeyInfo key)
         {
-            ShowOperationInfo($"{key.KeyChar} Добавление водителя в список");
+            ShowOperationInfo($"{key.KeyChar} Удаление водителя из списка");
 
             Console.WriteLine();
 
@@ -52,15 +52,27 @@ namespace CarDepartureLogApp.Core
 
             RequestToEnter("Введите номер водителя из списка", out int number);
 
-            Driver driver = drivers.FirstOrDefault(x => x.Id == number);
+            Driver? driver = drivers.FirstOrDefault(x => x.Id == number);
 
             if (driver is not null)
             {
-                _driverController.Delete(driver);
+                Console.WriteLine($"Водитель {driver.ToString()}\nЖелаете удалить? Y/N");
+
+                ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                if (userKey == ConsoleKey.Y)
+                {
+                    _driverController.Delete(driver);
+
+                    return;
+                }
+
                 return;
             }
+
             Console.WriteLine("Такого водителя в списке нет.");
 
+            PressAKey();
         }
 
         internal override void Update(ConsoleKeyInfo key)

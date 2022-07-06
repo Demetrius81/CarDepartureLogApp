@@ -4,10 +4,6 @@ namespace CarDepartureLogApp.Models
 {
     public class Driver : IDriver
     {
-        public Driver()
-        {
-
-        }
         public Driver(string name, string middleName, string surName)
         {
             Name = name;
@@ -56,6 +52,10 @@ namespace CarDepartureLogApp.Models
                 return true;
             }
             return false;
+        }
+        public override int GetHashCode()
+        {
+            return SurName.GetHashCode() ^ Id;
         }
     }
 }

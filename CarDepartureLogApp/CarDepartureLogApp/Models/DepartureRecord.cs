@@ -11,11 +11,7 @@ namespace CarDepartureLogApp.Models
         public int OdometerAfterLeaving { get; set; }
         public string PurposeOfDeparture { get; set; }
         public string Description { get; set; }
-
-        public DepartureRecord()
-        {
-
-        }
+                
 
         public DepartureRecord(DateTime departureTime,
                                int odometerBeforeLeaving,
@@ -51,8 +47,8 @@ namespace CarDepartureLogApp.Models
             DriverId = driverId;
         }
 
-        public Car Car { get; set; }
-        public Driver Driver { get; set; }
+        public Car? Car { get; set; }
+        public Driver? Driver { get; set; }
 
         public int CarId { get; set; }
         public int DriverId { get; set; }
@@ -103,6 +99,10 @@ namespace CarDepartureLogApp.Models
                 return true;
             }
             return false;
+        }
+        public override int GetHashCode()
+        {        
+            return OdometerBeforeLeaving ^ Id;        
         }
     }
 }

@@ -5,7 +5,7 @@ using CarDepartureLogApp.Models.Interfaces;
 namespace CarDepartureLogApp.Controllers
 {
     public class DriverController
-    {        
+    {
         public void Create(string name, string middleName, string surName)
         {
             using (var _context = new AppMySqlContext())
@@ -16,9 +16,9 @@ namespace CarDepartureLogApp.Controllers
             }
         }
 
-        public Driver Read(int id)
+        public Driver? Read(int id)
         {
-            Driver driver = new Driver();
+            Driver? driver;
 
             using (var _context = new AppMySqlContext())
             {
@@ -38,9 +38,13 @@ namespace CarDepartureLogApp.Controllers
             return drivers;
         }
 
-        public void Update(Driver driver, string surName)
+        public void Update(Driver? driver, string? surName)
         {
-            using (var _context = new AppMySqlContext())
+            if (driver == null && surName == null)
+            {
+                throw new NullReferenceException();
+            }
+            using (AppMySqlContext _context = new AppMySqlContext())
             {
                 _context.Drivers.Where(x => x.Equals(driver)).FirstOrDefault().SurName = surName;
 

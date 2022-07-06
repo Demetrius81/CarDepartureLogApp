@@ -46,7 +46,7 @@ namespace CarDepartureLogApp.Core
 
             Console.WriteLine();
 
-            List<Car> cars = new List<Car>();
+            List<Car> cars = _carController.ReadAll();
 
             ShowOperationInfo($"{key.KeyChar} Список автомобилей");
 
@@ -56,20 +56,28 @@ namespace CarDepartureLogApp.Core
             {
                 Console.WriteLine(item.ToString());
             }
-            
+
             RequestToEnter("Введите номер автомобиля из списка", out int number);
 
-            Car car = cars.FirstOrDefault(x => x.Id == number);
+            Car? car = cars.FirstOrDefault(x => x.Id == number);
 
             if (car is not null)
             {
-                _carController.Delete(car);
+                Console.WriteLine($"Автомобиль {car.ToString()}\nЖелаете удалить? Y/N");
 
+                ConsoleKey userKey = Console.ReadKey(true).Key;
+
+                if (userKey == ConsoleKey.Y)
+                {
+                    _carController.Delete(car);
+
+                    return;
+                }
                 return;
             }
             Console.WriteLine("Такого автомобиля в списке нет.");
 
-
+            PressAKey();
         }
 
         internal override void ShowAll(ConsoleKeyInfo key)

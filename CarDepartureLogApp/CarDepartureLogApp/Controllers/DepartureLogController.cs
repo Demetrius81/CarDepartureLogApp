@@ -52,7 +52,7 @@ namespace CarDepartureLogApp.Controllers
 
         public DepartureRecord Read(int id)
         {
-            DepartureRecord departureRecord = new DepartureRecord();
+            DepartureRecord departureRecord;
 
             using (var _context = new AppMySqlContext())
             {
@@ -137,7 +137,6 @@ namespace CarDepartureLogApp.Controllers
                 foreach (var item in recordsToRemove)
                 {
                     _context.Remove<DepartureRecord>(item);
-
                 }
 
                 _context.SaveChanges();

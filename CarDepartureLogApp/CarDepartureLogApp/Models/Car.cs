@@ -5,11 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CarDepartureLogApp.Models
 {
     public class Car : ICar
-    {
-        public Car()
-        {
-
-        }
+    {        
         public Car(string registrationNumber, string brand, string model)
         {            
             RegistrationNumber = registrationNumber;
@@ -64,6 +60,10 @@ namespace CarDepartureLogApp.Models
                 return true;
             }
             return false;
+        }
+        public override int GetHashCode()
+        {
+            return RegistrationNumber.GetHashCode()^Id;
         }
 
     }

@@ -19,7 +19,7 @@ namespace CarDepartureLogApp.Controllers
 
         public Car Read(int id)
         {
-            Car car = new Car();
+            Car car;
 
             using (var _context = new AppMySqlContext())
             {
